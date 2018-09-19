@@ -3,7 +3,9 @@ package lambda.example;
 import interfaces.Summator;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -56,6 +58,9 @@ class Example2 {
     void classMethodReferenceLambdaImplementation() {
         Summator<String> summator = Example2::stringSum;
 
+//        Comparator<Integer> intComparator = (a, b) -> Integer.compare(a, b);
+        Comparator<Integer> intComparator = Integer::compare;
+
         assertThat(summator.sum("a", "b"), is("ab"));
         assertThat(summator.twice("a"), is("aa"));
     }
@@ -68,7 +73,11 @@ class Example2 {
 
     @Test
     void objectMethodReferenceLambdaImplementation() {
-        Summator<String> summator = this::stringSumWithDelimiter;
+        Example2 example2 = new Example2();
+
+        Summator<String> summator = example2::stringSumWithDelimiter;
+
+
 
         assertThat(summator.sum("a", "b"), is("a-b"));
         assertThat(summator.twice("a"), is("a-a"));
@@ -76,7 +85,16 @@ class Example2 {
 
     @Test
     void typeMethodReference() {
+        String str = "hello";
+
+
+        Supplier<Integer> getStrLength = str::length;
+        getStrLength.get();
+
+
         Function<String, Integer> getLength = String::length;
+        getLength.apply("123");
+        getLength.apply(str);
 
         assertThat(getLength.apply("123"), is(3));
     }

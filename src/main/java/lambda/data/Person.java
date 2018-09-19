@@ -1,8 +1,8 @@
 package lambda.data;
 
-import java.io.Serializable;
+import java.util.Objects;
 
-public class Person implements Serializable {
+public class Person {
 
     private final String firstName;
     private final String lastName;
@@ -30,26 +30,19 @@ public class Person implements Serializable {
         return firstName + " " + lastName;
     }
 
-    // TODO need to unify this implementation
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
-
         Person person = (Person) other;
-
-        if (age != person.age) return false;
-        if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) return false;
-        return lastName != null ? lastName.equals(person.lastName) : person.lastName == null;
+        return age == person.age
+            && Objects.equals(firstName, person.firstName)
+            && Objects.equals(lastName, person.lastName);
     }
 
-    // TODO need to unify this implementation
     @Override
     public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + age;
-        return result;
+        return Objects.hash(age, firstName, lastName);
     }
 
     @Override

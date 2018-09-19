@@ -8,6 +8,7 @@ import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,15 @@ class Example1 {
     void sortPersonsByLastNameUsingArraysSortUsingLocalComparator() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, null);
+        class ComparatorByLastName implements Comparator<Person> {
+
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getLastName().compareTo(o2.getLastName());
+            }
+        }
+
+        Arrays.sort(persons, new ComparatorByLastName());
 
         assertThat(persons, is(arrayContaining(
                 new Person("Алексей", "Доренко", 40),
@@ -37,7 +46,12 @@ class Example1 {
     void sortPersonsByLastNameUsingArraysSortUsingAnonymousComparator() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, null);
+        Arrays.sort(persons, new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getLastName().compareTo(o2.getLastName());
+            }
+        });
 
         assertThat(persons, is(arrayContaining(
                 new Person("Алексей", "Доренко", 40),
@@ -52,8 +66,7 @@ class Example1 {
 
         Person person = null;
         for (Person current : persons) {
-            // FIXME potential error
-            if (current.getFirstName().equals("Алексей")) {
+            if ("Алексей".equals(current.getFirstName())) {
                 person = current;
                 break;
             }
