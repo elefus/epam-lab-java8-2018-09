@@ -18,12 +18,21 @@ class Example4 {
         return task.call();
     }
 
+    private Callable<String> ref;
+
     @Test
     void closureAnonymousClass() throws Exception {
-        // FIXME effectively final
-        final Person person = new Person("Иван", "Мельников", 33);
+        Person person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(null);
+        Callable<String> task = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return person.getFirstName();
+            }
+        };
+        String firstName = performInCurrentThread(task);
+        ref = task;
+
 
         assertThat(firstName, is("Иван"));
     }
@@ -31,6 +40,7 @@ class Example4 {
     @Test
     void closureStatementLambda() throws Exception {
         Person person = new Person("Иван", "Мельников", 33);
+//        person = null;
 
         String greeting = performInCurrentThread(() -> {
             String prefix = person.getAge() > 30 ? "Добрый день" : "Привет";
@@ -53,7 +63,11 @@ class Example4 {
     void closureObjectMethodReferenceLambda() throws Exception {
         Person person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(person::getFirstName);
+        Callable<String> getFirstName = person::getFirstName;
+
+        ref = getFirstName;
+
+        String firstName = performInCurrentThread(getFirstName);
 
         assertThat(firstName, is("Иван"));
     }
@@ -73,9 +87,9 @@ class Example4 {
 
     @Test
     void closureThisReferenceByExpressionLambda() throws Exception {
-        person = new Person("Иван", "Мельников", 33);
+        this.person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(() -> person.getFirstName());
+        String firstName = performInCurrentThread(() -> this.person.getFirstName());
 
         assertThat(firstName, is("Иван"));
     }
@@ -84,14 +98,14 @@ class Example4 {
     void overwriteReferenceClosuredByExpressionLambdaAfterUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        Callable<String> task = () -> person.getFirstName();
+        Callable<String> task = () -> this.person.getFirstName();
         String firstName = performInCurrentThread(task);
 
-        assertThat(firstName, is(null));
+        assertThat(firstName, is("Иван"));
 
         person = new Person("Алексей", "Игнатенко", 25);
 
-        assertThat(task.call(), is(null));
+        assertThat(task.call(), is("Алексей"));
     }
 
     @Test
@@ -101,11 +115,11 @@ class Example4 {
         Callable<String> task = person::getFirstName;
         String firstName = performInCurrentThread(task);
 
-        assertThat(firstName, is(null));
+        assertThat(firstName, is("Иван"));
 
         person = new Person("Алексей", "Игнатенко", 25);
 
-        assertThat(task.call(), is(null));
+        assertThat(task.call(), is("Алексей"));
     }
 
     private Callable<String> performLaterFromCurrentThread(Callable<String> task) {
@@ -119,26 +133,26 @@ class Example4 {
     void overwriteReferenceClosuredByExpressionLambdaBeforeUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        Callable<String> delayedTask = performLaterFromCurrentThread(() -> person.getFirstName());
+        Callable<String> delayedTask = performLaterFromCurrentThread(() -> this.person.getFirstName());
 
         person = new Person("Алексей", "Игнатенко", 25);
 
         String firstName = delayedTask.call();
 
-        assertThat(firstName, is(null));
+        assertThat(firstName, is("Алексей"));
     }
 
     @Test
     void overwriteReferenceClosuredByObjectMethodReferenceLambdaBeforeUsing() throws Exception {
         person = new Person("Иван", "Мельников", 33);
 
-        Callable<String> delayedTask = performLaterFromCurrentThread(person::getFirstName);
+        Callable<String> delayedTask = performLaterFromCurrentThread((this.person)::getFirstName);
 
         person = new Person("Алексей", "Игнатенко", 25);
 
         String firstName = delayedTask.call();
 
-        assertThat(firstName, is(null));
+        assertThat(firstName, is("Иван"));
     }
 
     private Person getPerson() {
@@ -155,6 +169,6 @@ class Example4 {
 
         String firstName = delayedTask.call();
 
-        assertThat(firstName, is(null));
+        assertThat(firstName, is("Иван"));
     }
 }

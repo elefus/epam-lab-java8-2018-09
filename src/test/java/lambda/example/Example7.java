@@ -27,7 +27,9 @@ class Example7 {
 
     @Test
     void ambiguousMethodReference() {
-//        perform(() -> System.out.println("Lambda for Usable"));
-//        perform(this::doSomething);
+        perform((Runnable)() -> System.out.println("Lambda for Usable"));
+
+        Usable doSomething = this::doSomething;
+        perform(doSomething);
     }
 }

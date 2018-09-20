@@ -44,7 +44,7 @@ class Example8 {
     void factoryAsReferenceToConstructor() {
         PersonFactory factory = Person::new;
 
-        // TODO reference to zero-arguments constructor
+        Supplier<Person> factory2 = Person::new;
 
         Person actual = factory.create("Иван", "Мельников", 33);
 

@@ -87,12 +87,16 @@ class Example2 {
     void typeMethodReference() {
         String str = "hello";
 
+        Runnable task = str::length;
+        task.run();
 
         Supplier<Integer> getStrLength = str::length;
         getStrLength.get();
 
 
         Function<String, Integer> getLength = String::length;
+        Function<String, Integer> getLength1 = string -> string.length();
+
         getLength.apply("123");
         getLength.apply(str);
 
@@ -107,9 +111,9 @@ class Example2 {
 
         // FIXME type inference
 //        process((left, right) -> Example2.sum(left, right));
-//        process((Integer left, Integer right) -> Example2.sum(left, right));
-//        process((left, right) -> Example2.sum((Integer)left, (Integer)right));
-//        Example2.<Integer>process((left, right) -> Example2.sum(left, right));
+        process((Integer left, Integer right) -> Example2.sum(left, right));
+        process((left, right) -> Example2.sum((Integer)left, (Integer)right));
+        Example2.<Integer>process((left, right) -> Example2.sum(left, right));
     }
 
     private static Integer sum(Integer left, Integer right) {

@@ -6,6 +6,7 @@ import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,11 @@ class Example3 {
     void sortPersonsByLastNameUsingArraysLambda() {
         Person[] persons = getPersons();
 
-        // TODO expression-lambda
-        Arrays.sort(persons, null);
+        Arrays.sort(persons, (p1, p2) -> p1.getLastName().compareTo(p2.getLastName()));
+        Arrays.sort(persons, Comparator.comparing(person -> person.getLastName()));
+        Arrays.sort(persons, Comparator.comparing(Person::getLastName).thenComparing(Person::getFirstName));
 
-        // TODO lambda without context
+//        (Person p1, Person p2) -> p1.getLastName().compareTo(p2.getLastName());
 
         assertThat(persons, is(arrayContaining(
                 new Person("Алексей", "Доренко", 40),

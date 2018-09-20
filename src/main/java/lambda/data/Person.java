@@ -1,5 +1,7 @@
 package lambda.data;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public class Person {
@@ -14,12 +16,18 @@ public class Person {
         this.age = age;
     }
 
+    public Person() {
+        firstName = "default";
+        lastName = "default";
+        age = -1;
+    }
+
     public String getFirstName(Person this) {
         return firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastName(Person this) {
+        return this.lastName;
     }
 
     public int getAge() {
