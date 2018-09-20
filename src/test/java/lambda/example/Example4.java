@@ -21,14 +21,9 @@ class Example4 {
     @Test
     void closureAnonymousClass() throws Exception {
         // FIXME effectively final
-        Person person = new Person("Иван", "Мельников", 33);
+        final Person person = new Person("Иван", "Мельников", 33);
 
-        String firstName = performInCurrentThread(new Callable<String>() {
-            @Override
-            public String call() {
-                return person.getFirstName();
-            }
-        });
+        String firstName = performInCurrentThread(null);
 
         assertThat(firstName, is("Иван"));
     }

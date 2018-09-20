@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 class Example2 {
 
     @Test
-    void anonymousClassImplementation() {
+    void anonymousClass() {
         Summator<Integer> summator = new Summator<Integer>() {
             @Override
             public Integer sum(Integer left, Integer right) {
@@ -29,7 +29,7 @@ class Example2 {
     }
 
     @Test
-    void statementLambdaImplementation() {
+    void statementLambda() {
         Summator<Integer> summator = (left, right) -> {
             return left + right;
         };
@@ -41,7 +41,7 @@ class Example2 {
     }
 
     @Test
-    void expressionLambdaImplementation() {
+    void expressionLambda() {
         Summator<Integer> summator = (a, b) -> a + b;
 
         assertThat(summator.sum(1, 2), is(3));
@@ -55,7 +55,7 @@ class Example2 {
     }
 
     @Test
-    void classMethodReferenceLambdaImplementation() {
+    void staticMethodReference() {
         Summator<String> summator = Example2::stringSum;
 
 //        Comparator<Integer> intComparator = (a, b) -> Integer.compare(a, b);
@@ -72,7 +72,7 @@ class Example2 {
     }
 
     @Test
-    void objectMethodReferenceLambdaImplementation() {
+    void objectMethodReference() {
         Example2 example2 = new Example2();
 
         Summator<String> summator = example2::stringSumWithDelimiter;
