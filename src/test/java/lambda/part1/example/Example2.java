@@ -1,4 +1,4 @@
-package lambda.example;
+package lambda.part1.example;
 
 import interfaces.Summator;
 import org.junit.jupiter.api.Test;

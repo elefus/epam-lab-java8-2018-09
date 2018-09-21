@@ -1,4 +1,4 @@
-package lambda.example;
+package lambda.part1.example;
 
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;

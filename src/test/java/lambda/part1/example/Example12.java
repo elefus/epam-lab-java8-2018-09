@@ -1,4 +1,4 @@
-package lambda.example;
+package lambda.part1.example;
 
 public class Example12 {
 
