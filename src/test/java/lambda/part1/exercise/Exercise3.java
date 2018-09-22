@@ -1,5 +1,7 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
@@ -7,18 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.is;
 
-@SuppressWarnings({"ConstantConditions", "unused"})
 class Exercise3 {
 
     @Test
     void sortPersonsByAgeUsingArraysSortExpressionLambda() {
         Person[] persons = getPersons();
-
-        // TODO use Arrays.sort + expression-lambda
-
+        Arrays.sort(persons, (p1, p2) -> Integer.compare(p1.getAge(), p2.getAge()));
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
                 new Person("Николай", "Зимов", 30),
@@ -28,10 +27,13 @@ class Exercise3 {
     }
 
     @Test
-    void sortPersonsByLastNameThenFirstNameUsingArraysSortExpressionLambda() {
+    void sortPersonsByLastNameThenFirstNameUsingArraysSortStatementLambda() {
         Person[] persons = getPersons();
-
-        // TODO use Arrays.sort + statement-lambda
+        Arrays.sort(persons, (p1, p2) -> {
+            int lastNameComparing = p1.getLastName().compareTo(p2.getLastName());
+            int firstNameComparing = p1.getFirstName().compareTo(p2.getFirstName());
+           return lastNameComparing != 0 ? lastNameComparing : firstNameComparing;
+        });
 
         assertThat(persons, is(arrayContaining(
                 new Person("Алексей", "Доренко", 40),
@@ -41,12 +43,13 @@ class Exercise3 {
         )));
     }
 
+    @SuppressWarnings("Guava")
     @Test
     void findFirstWithAge30UsingGuavaPredicateLambda() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        // TODO use FluentIterable
-        Person person = null;
+        Optional<Person> personOptional = FluentIterable.from(persons).firstMatch(p -> p.getAge() == 30);
+        Person person = personOptional.isPresent() ? personOptional.get() : null;
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
