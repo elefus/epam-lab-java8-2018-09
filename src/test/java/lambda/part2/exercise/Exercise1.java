@@ -55,7 +55,7 @@ class Exercise1 {
         Person person2 = new Person("Илья", "Жирков", 22);
 
         // воспользоваться ссылкой на метод getFullName
-        Function<Person, String> getFullName = Exercise1::getFullName;
+        Function<Person, String> getFullName = Person::getFullName;
 
         // (Person, Person) -> Integer
         // воспользоваться методом createExtractorAgeOfPersonWithTheLongestFullName
