@@ -40,7 +40,7 @@ class Exercise1 {
      }
 
      private static BiFunction<Person, Person, Integer> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> getName) {
-        return ((p1, p2) -> (getFullName(p1).length() > getFullName(p2).length()
+        return ((p1, p2) -> (getName.apply(p1).length() > getName.apply(p2).length()
                                       ? p1.getAge() : p2.getAge()));
      }
 
