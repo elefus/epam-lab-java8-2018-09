@@ -21,7 +21,12 @@ class Exercise1 {
     void sortPersonsByAgeUsingArraysSortLocalComparator() {
         Person[] persons = getPersons();
 
-        Comparator<Person> personAgeComparator = Comparator.comparingInt(Person::getAge);
+        Comparator<Person> personAgeComparator = new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return Integer.compare(o1.getAge(), o2.getAge());
+            }
+        };
         Arrays.sort(persons, personAgeComparator);
 
         assertThat(persons, is(arrayContaining(
@@ -36,7 +41,12 @@ class Exercise1 {
     void sortPersonsByAgeUsingArraysSortAnonymousComparator() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, Comparator.comparingInt(Person::getAge));
+        Arrays.sort(persons, new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return Integer.compare(o1.getAge(), o2.getAge());
+            }
+        });
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
