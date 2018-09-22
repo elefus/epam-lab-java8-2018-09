@@ -39,9 +39,9 @@ class Exercise1 {
         return person.getFirstName() + " " + person.getLastName();
      }
 
-     private static int createExtractorAgeOfPersonWithTheLongestFullName(Person person1, Person person2) {
-        if(person1.getFullName().length() > person2.getFullName().length()) return person1.getAge();
-        else return person2.getAge();
+     private static BiFunction<Person, Person, Integer> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> getName) {
+        return ((p1, p2) -> (getFullName(p1).length() > getFullName(p2).length()
+                                      ? p1.getAge() : p2.getAge()));
      }
 
     @Test
@@ -52,7 +52,7 @@ class Exercise1 {
         Function<Person, String> getFullName = Person::getFullName;
 
         BiFunction<Person, Person, Integer> extractorAgeOfPersonWithTheLongestFullName =
-                Exercise1::createExtractorAgeOfPersonWithTheLongestFullName;
+                createExtractorAgeOfPersonWithTheLongestFullName(getFullName);
 
         assertThat(extractorAgeOfPersonWithTheLongestFullName.apply(person1, person2), is(33));
     }
