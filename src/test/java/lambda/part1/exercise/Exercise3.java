@@ -21,9 +21,7 @@ class Exercise3 {
     void sortPersonsByAgeUsingArraysSortExpressionLambda() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, (Person p1, Person p2) -> {
-            return Integer.compare(p1.getAge(), p2.getAge());
-        });
+        Arrays.sort(persons, (Person p1, Person p2) -> Integer.compare(p1.getAge(), p2.getAge()));
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
@@ -39,7 +37,7 @@ class Exercise3 {
         Person[] persons = getPersons();
 
         Arrays.sort(persons, (p1, p2) -> {
-            int lastNameCompare = p1.getLastName().compareTo(p2.getLastName());
+            int lastNameCompare = (p1.getLastName().compareTo(p2.getLastName()));
             return ((lastNameCompare == 0) ? p1.getFirstName().compareTo(p2.getFirstName()) : lastNameCompare);
         });
 
