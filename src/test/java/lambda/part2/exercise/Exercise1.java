@@ -47,7 +47,7 @@ class Exercise1 {
     // TODO - принимающий способ извлечения полного имени из объекта Person
     // TODO - возвращающий BiFunction, сравнивающий два объекта Person и возвращающий возраст того, чье полное имя длиннее.
      private static BiFunction<Person, Person, Integer> createExtractorAgeOfPersonWithTheLongestFullName(Function<Person, String> getFullName) {
-        return (p1, p2) -> getFullName(p1).length() > getFullName(p2).length() ? p1.getAge() : p2.getAge();
+        return (p1, p2) -> getFullName.apply(p1).length() > getFullName.apply(p2).length() ? p1.getAge() : p2.getAge();
     }
 
     @Test
