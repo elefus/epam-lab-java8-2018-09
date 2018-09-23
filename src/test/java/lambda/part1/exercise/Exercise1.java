@@ -1,5 +1,6 @@
 package lambda.part1.exercise;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
@@ -7,11 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.is;
 
 class Exercise1 {
 
@@ -83,14 +83,17 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Predicate<? super Person> isAge30Checker = new Predicate<Person>() {
+        Predicate<Person> isAge30Checker = new Predicate<Person>() {
             @Override
-            public boolean test(Person person) {
+            public boolean apply(Person person) {
                 return person.getAge() == 30;
             }
+
         };
 
-        Person person = null;
+        Person person = FluentIterable.from(persons)
+                .firstMatch(isAge30Checker)
+                .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
@@ -99,7 +102,15 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaAnonymousPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Person person = null;
+        Person person = FluentIterable.from(persons)
+                .firstMatch(new Predicate<Person>() {
+
+                    @Override
+                    public boolean apply(Person person) {
+                        return person.getAge() == 30;
+                    }
+                })
+                .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
