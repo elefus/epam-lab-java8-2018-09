@@ -55,7 +55,7 @@ class Exercise1 {
             @Override
             public int compare(Person o1, Person o2) {
                 int result = o1.getLastName().compareTo(o2.getLastName());
-                return (result != 0)? result:o1.getFirstName().compareTo(o2.getFullName());
+                return (result != 0)? result:o1.getFirstName().compareTo(o2.getFirstName());
             }
         });
 
@@ -71,7 +71,7 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
         Person person = null;
-        person = FluentIterable.from(persons).filter((p)->p.getAge() == 30).first().get();
+        person = FluentIterable.from(persons).firstMatch((p)->p.getAge() == 30).get();
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
 
@@ -79,12 +79,12 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaAnonymousPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
         Person person = null;
-        person = FluentIterable.from(persons).filter(new Predicate<Person>() {
+        person = FluentIterable.from(persons).firstMatch(new Predicate<Person>() {
             @Override
             public boolean apply(Person person) {
                 return person.getAge() == 30;
             }
-        }).first().get();
+        }).get();
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
 
