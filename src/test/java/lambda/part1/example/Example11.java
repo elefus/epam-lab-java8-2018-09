@@ -36,6 +36,34 @@ class Example11 {
         return Example11::method;
     }
 
+    @Test
+    void test() {
+        Consumer<String> consumer1 = anonymousConsumer();
+        Consumer<String> consumer2 = anonymousConsumer();
+        assertThat(consumer1, not(sameInstance(consumer2)));
+//        consumer1.accept("1");
+
+
+        Consumer<String> consumer3 = lambdaConsumer();
+        Consumer<String> consumer4 = lambdaConsumer();
+        assertThat(consumer3, is(sameInstance(consumer4)));
+//        consumer3.accept("2");
+
+        Consumer<String> consumer5 = referenceConsumer();
+        Consumer<String> consumer6 = referenceConsumer();
+        assertThat(consumer5, is(sameInstance(consumer6)));
+        consumer5.accept("3");
+
+
+        Supplier<Integer> supplier1 = lengthExtractor("qwe");
+        Supplier<Integer> supplier2 = lengthExtractor("abc");
+        assertThat(supplier1, not(sameInstance(supplier2)));
+//
+        Supplier<String> string1 = getString();
+        Supplier<String> string2 = getString();
+        assertThat(string1, not(sameInstance(string2)));
+    }
+
     @SuppressWarnings("Convert2MethodRef")
     private static Supplier<Integer> lengthExtractor(String str) {
         return () -> str.length();
@@ -45,28 +73,5 @@ class Example11 {
 
     private Supplier<String> getString() {
         return () -> str;
-    }
-
-    @Test
-    void test() {
-        Consumer<String> consumer1 = anonymousConsumer();
-        Consumer<String> consumer2 = anonymousConsumer();
-        assertThat(consumer1, not(sameInstance(consumer2)));
-
-        Consumer<String> consumer3 = lambdaConsumer();
-        Consumer<String> consumer4 = lambdaConsumer();
-        assertThat(consumer3, is(sameInstance(consumer4)));
-
-        Consumer<String> consumer5 = referenceConsumer();
-        Consumer<String> consumer6 = referenceConsumer();
-        assertThat(consumer5, is(sameInstance(consumer6)));
-
-        Supplier<Integer> supplier1 = lengthExtractor("qwe");
-        Supplier<Integer> supplier2 = lengthExtractor("abc");
-        assertThat(supplier1, not(sameInstance(supplier2)));
-
-        Supplier<String> string1 = getString();
-        Supplier<String> string2 = getString();
-        assertThat(string1, not(sameInstance(string2)));
     }
 }

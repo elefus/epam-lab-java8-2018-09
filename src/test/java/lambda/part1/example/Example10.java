@@ -39,7 +39,8 @@ public class Example10 {
     }
 
     private Predicate<String> getPredicateEnclosingThis() {
-        return string -> strings.contains(string);
+        List<String> local = this.strings;
+        return string -> local.contains(string);
     }
 }
 

@@ -13,52 +13,36 @@ import static org.hamcrest.Matchers.is;
 @SuppressWarnings({"UnnecessaryLocalVariable", "unused"})
 class Example2 {
 
-    // TODO functional descriptor
+    // (Person, Person → String) → (String → boolean)
     @SuppressWarnings("Convert2Lambda")
     private static Predicate<String> stringPropertyChecker(Person person, Function<Person, String> getProperty) {
-        return new Predicate<String>() {
-            @Override
-            public boolean test(String propertyValue) {
-                return Objects.equals(getProperty.apply(person), propertyValue);
-            }
-        };
+        return propertyValue -> Objects.equals(getProperty.apply(person), propertyValue);
     }
 
     @Test
     void checkConcretePersonStringProperty() {
         Person person = new Person("Иван", "Мельников", 33);
 
-        // TODO personToFirstName: Person -> String
-        // TODO isFirstNameEqualsTo: (Person -> String) -> boolean
+        Predicate<String> isFirstNameEqualsTo = stringPropertyChecker(person, Person::getFirstName);
 
-//        assertThat(isFirstNameEqualsTo.test("Иван"), is(true));
-//        assertThat(isFirstNameEqualsTo.test("Игорь"), is(false));
+        assertThat(isFirstNameEqualsTo.test("Иван"), is(true));
+        assertThat(isFirstNameEqualsTo.test("Игорь"), is(false));
     }
 
-    // TODO functional descriptor
+    // (Person → String) → (Person → (String → boolean))
     @SuppressWarnings("Convert2Lambda")
     private static Function<Person, Predicate<String>> stringPropertyChecker(Function<Person, String> propertyExtractor) {
-        return new Function<Person, Predicate<String>>() {
-            @Override
-            public Predicate<String> apply(Person person) {
-                return new Predicate<String>() {
-                    @Override
-                    public boolean test(String checkingValue) {
-                        return Objects.equals(propertyExtractor.apply(person), checkingValue);
-                    }
-                };
-            }
-        };
+        return person -> checkingValue -> Objects.equals(propertyExtractor.apply(person), checkingValue);
     }
 
     @Test
     void checkAnyPersonStringProperty() {
         Person person = new Person("Иван", "Мельников", 33);
 
-        // TODO personToLastNameChecker: Person -> (String -> boolean)
+        Function<Person, Predicate<String>> personToLastNameChecker = stringPropertyChecker(Person::getLastName);
 
-//        assertThat(..."Мельников");
-//        assertThat(..."Гущин");
+        assertThat(personToLastNameChecker.apply(person).test("Мельников"), is(true));
+        assertThat(personToLastNameChecker.apply(person).test("Гущин"), is(false));
     }
 
     private static <V, P, T> Function<V, Predicate<P>> propertyChecker(Function<V, T> propertyExtractor) {
@@ -69,9 +53,9 @@ class Example2 {
     void checkAnyProperty() {
         Person person = new Person("Иван", "Мельников", 33);
 
-        // TODO ageChecker: Person -> (Integer -> boolean)
+        Function<Person, Predicate<String>> personToLastNameChecker = propertyChecker(Person::getLastName);
 
-//        assertThat(ageChecker..., is(true));
-//        assertThat(ageChecker..., is(false));
+        assertThat(personToLastNameChecker.apply(person).test("Мельников"), is(true));
+        assertThat(personToLastNameChecker.apply(person).test("Гущин"), is(false));
     }
 }
