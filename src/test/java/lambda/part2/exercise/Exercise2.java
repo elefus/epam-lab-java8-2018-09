@@ -44,7 +44,7 @@ class Exercise2 {
         Predicate<Person> personHasNotEmptyLastName = negateUsingLogicalOperator(personHasEmptyLastName);
 
         Predicate<Person> personHasNotEmptyLastNameAndFirstName =
-                negateUsingLogicalOperator(andUsingLogicalOperator(personHasEmptyLastName, personHasEmptyFirstName));
+                andUsingLogicalOperator(personHasNotEmptyFirstName, personHasNotEmptyLastName);
 
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Алексей", "Доренко", 40)), is(true));
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Николай", "", 30)), is(false));
@@ -74,7 +74,7 @@ class Exercise2 {
         Predicate<Person> personHasNotEmptyLastName = negate(personHasEmptyLastName);
 
         Predicate<Person> personHasNotEmptyLastNameAndFirstName =
-                negate(and(personHasEmptyLastName, personHasEmptyFirstName));
+                and(personHasNotEmptyLastName, personHasNotEmptyFirstName);
 
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Алексей", "Доренко", 40)), is(true));
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Николай", "", 30)), is(false));
@@ -92,7 +92,7 @@ class Exercise2 {
 
         // использовать Predicate.and
         Predicate<Person> personHasNotEmptyLastNameAndFirstName =
-                (personHasEmptyLastName.and(personHasEmptyFirstName)).negate();
+                personHasNotEmptyFirstName.and(personHasNotEmptyLastName);
 
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Алексей", "Доренко", 40)), is(true));
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Николай", "", 30)), is(false));
