@@ -76,8 +76,7 @@ class Exercise2 {
         Predicate<Person> personHasNotEmptyFirstName = personHasEmptyFirstName.negate();
         Predicate<Person> personHasNotEmptyLastName = personHasEmptyLastName.negate();
 
-        Predicate<Person> personHasNotEmptyLastNameAndFirstName =
-                personHasNotEmptyFirstName.or(personHasNotEmptyLastName);
+        Predicate<Person> personHasNotEmptyLastNameAndFirstName = personHasEmptyLastName.and(personHasEmptyFirstName).negate();
 
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Алексей", "Доренко", 40)), is(true));
         assertThat(personHasNotEmptyLastNameAndFirstName.test(new Person("Николай", "", 30)), is(true));
