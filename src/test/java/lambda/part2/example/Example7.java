@@ -6,6 +6,7 @@ import lambda.data.Person;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Example7 {
 
     private static List<Person> selectPeopleOlderThan30(List<Employee> employees) {

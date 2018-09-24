@@ -1,12 +1,10 @@
 package lambda.part2.example;
 
-import lombok.Data;
-
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class Example9 {
 
-    @Data
     private static class Metric {
         private static final String TOTAL = "< total";
 
