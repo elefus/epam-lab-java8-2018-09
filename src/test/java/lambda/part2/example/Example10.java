@@ -19,7 +19,7 @@ class Example10 {
         Person create(String name, String lastName, int age);
     }
 
-    // ((String, String, int) -> Person) -> String -> String -> int -> Person
+    // TODO functional descriptor
     private static Function<String, Function<String, IntFunction<Person>>> curriedPersonFactory(PersonFactory factory) {
         return name -> lastName -> age -> factory.create(name, lastName, age);
     }
@@ -38,7 +38,7 @@ class Example10 {
         assertThat(lambdaCurriedPersonFactory.apply("Мельников").apply("Иван").apply(33), is(person));
     }
 
-    // ((String, String, int) -> Person, String) -> ((String, Integer) -> Person)
+    // TODO functional descriptor
     private BiFunction<String, Integer, Person> personFactoryWithFixedLastName(PersonFactory factory, String lastName) {
         return (name, age) -> factory.create(name, lastName, age);
     }
