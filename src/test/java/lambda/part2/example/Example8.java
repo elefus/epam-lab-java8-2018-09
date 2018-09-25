@@ -1,6 +1,7 @@
 package lambda.part2.example;
 
 import java.util.List;
+import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class Example8 {
@@ -18,5 +19,20 @@ public class Example8 {
             BusinessObject transformed = transform(model);
             return validate(transformed);
         }
+
+        default List<String> inverseChaining(String value) {
+            return this.validate(this.transform(this.createModel(value)));
+        }
+
+        default List<String> chaining(String value) {
+            return first(this::createModel)
+                .andThen(this::transform)
+                .andThen(this::validate)
+                .apply(value);
+        }
+    }
+
+    private static <T, R> Function<T, R> first(Function<T, R> function) {
+        return function;
     }
 }

@@ -1,8 +1,11 @@
 package lambda.part3.example;
 
+import com.google.common.io.Files;
 import lambda.data.Employee;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,6 +17,12 @@ public class Example2 {
 
     public static class FilterUtil<T> {
 
+        private final List<T> source;
+
+        private FilterUtil(List<T> source) {
+            this.source = source;
+        }
+
         /**
          * Статический фабричный метод.
          * @param source Исходный список.
@@ -21,7 +30,7 @@ public class Example2 {
          * @return Созданный объект.
          */
         public static <T> FilterUtil<T> from(List<T> source) {
-            throw new UnsupportedOperationException();
+            return new FilterUtil<>(source);
         }
 
         /**
@@ -31,17 +40,41 @@ public class Example2 {
          * @param condition условие по которому производится отбор.
          */
         public FilterUtil<T> filter(Predicate<T> condition) {
-            throw new UnsupportedOperationException();
+            ArrayList<T> result = new ArrayList<>();
+
+            source.forEach(element -> {
+                if (condition.test(element)) {
+                    result.add(element);
+                }
+            });
+
+            for (T element : source) {
+                if (condition.test(element)) {
+                    result.add(element);
+                }
+            }
+
+
+//            for (Iterator<T> iterator = source.iterator(); iterator.hasNext(); ) {
+//                T element = iterator.next();
+//                if (condition.test(element)) {
+//                    result.add(element);
+//                }
+//            }
+            return from(result);
         }
 
         public List<T> getResult() {
-            throw new UnsupportedOperationException();
+            return new ArrayList<>(source);
         }
     }
 
     @Test
     public void findIvanWithDeveloperExperienceAndWorkedInEpamMoreThenYearAtOnePositionUsingFilterUtil() {
         List<Employee> employees = Example1.getEmployees();
+
+        List<Employee> result1 = FilterUtil.from(employees)
+                                           .getResult();
 
         List<Employee> result = null;
 

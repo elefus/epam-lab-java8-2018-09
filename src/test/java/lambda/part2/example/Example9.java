@@ -1,10 +1,14 @@
 package lambda.part2.example;
 
+import lombok.Getter;
+
 import java.util.Objects;
+import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class Example9 {
 
+    @Getter
     private static class Metric {
         private static final String TOTAL = "< total";
 
@@ -17,19 +21,20 @@ public class Example9 {
         private String bucket;
         private String bucketPillar;
 
-        private double netRisk;
-        private double grossRisk;
-        private double boReserve;
-
         private void foldFields(Metric m1, Metric m2) {
-            tradeNumber = Objects.equals(m1.tradeNumber, m2.tradeNumber) ? m1.tradeNumber : TOTAL;
-            nettingLevel = Objects.equals(m1.nettingLevel, m2.nettingLevel) ? m1.nettingLevel : TOTAL;
-            counterparty = Objects.equals(m1.counterparty, m2.counterparty) ? m1.counterparty : TOTAL;
-            book = Objects.equals(m1.book, m2.book) ? m1.book: TOTAL;
-            portfolio = Objects.equals(m1.portfolio, m2.portfolio) ? m1.portfolio : TOTAL;
-            curve = Objects.equals(m1.curve, m2.curve) ? m1.portfolio : TOTAL;
-            bucket = Objects.equals(m1.bucket, m2.curve) ? m1.bucket : TOTAL;
-            bucketPillar = Objects.equals(m1.bucketPillar, m1.bucketPillar) ? m1.bucketPillar : TOTAL;
+            // (Metric → String) → String
+            Function<Function<Metric, String>, String> folder = getter -> fold(getter, m1, m2);
+
+            tradeNumber = folder.apply(Metric::getTradeNumber);
+            nettingLevel = folder.apply(Metric::getNettingLevel);
+            counterparty = folder.apply(Metric::getCounterparty);
+            book = folder.apply(Metric::getBook);
+            bucketPillar = folder.apply(Metric::getBucketPillar);
+        }
+
+        private String fold(Function<Metric, String> getter, Metric m1, Metric m2) {
+            String m1Value = getter.apply(m1);
+            return Objects.equals(m1Value, getter.apply(m2)) ? m1Value : TOTAL;
         }
     }
 }

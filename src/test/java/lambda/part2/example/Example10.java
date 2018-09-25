@@ -16,10 +16,11 @@ class Example10 {
     @FunctionalInterface
     private interface PersonFactory {
 
+        // (String, String, int) → Person
         Person create(String name, String lastName, int age);
     }
 
-    // TODO functional descriptor
+    // PersonFactory → (String → String → int → Person)
     private static Function<String, Function<String, IntFunction<Person>>> curriedPersonFactory(PersonFactory factory) {
         return name -> lastName -> age -> factory.create(name, lastName, age);
     }
@@ -38,7 +39,7 @@ class Example10 {
         assertThat(lambdaCurriedPersonFactory.apply("Мельников").apply("Иван").apply(33), is(person));
     }
 
-    // TODO functional descriptor
+    // (PersonFactory, String) → ((String, Integer) → Person)
     private BiFunction<String, Integer, Person> personFactoryWithFixedLastName(PersonFactory factory, String lastName) {
         return (name, age) -> factory.create(name, lastName, age);
     }
