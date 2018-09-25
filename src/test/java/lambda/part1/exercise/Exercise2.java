@@ -25,20 +25,12 @@ class Exercise2 {
     void implementsIntegerMultiplierUsingAnonymousClass() {
         Multiplier<Integer> multiplier = null;
 
-        class IntMultiplier implements Multiplier<Integer>{
-
+        multiplier = new Multiplier<Integer>() {
             @Override
             public Integer multiply(Integer value, int multiplier) {
                 return value*multiplier;
             }
-
-            @Override
-            public Integer twice(Integer integer) {
-                return integer*2;
-            }
-        }
-
-        multiplier = new IntMultiplier();
+        };
         testIntegerMultiplier(multiplier);
     }
 
