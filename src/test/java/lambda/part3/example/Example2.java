@@ -2,6 +2,7 @@ package lambda.part3.example;
 
 import com.google.common.io.Files;
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,8 +26,9 @@ public class Example2 {
 
         /**
          * Статический фабричный метод.
+         *
          * @param source Исходный список.
-         * @param <T> Тип элементов исходного списка.
+         * @param <T>    Тип элементов исходного списка.
          * @return Созданный объект.
          */
         public static <T> FilterUtil<T> from(List<T> source) {
@@ -37,6 +39,7 @@ public class Example2 {
          * Создает объект для фильтрации, передавая ему новый список, построенный на основе исходного.
          * Для добавления в новый список каждый элемент проверяется на соответствие заданному условию.
          * ([T], (T → boolean)) → [T]
+         *
          * @param condition условие по которому производится отбор.
          */
         public FilterUtil<T> filter(Predicate<T> condition) {
@@ -48,12 +51,11 @@ public class Example2 {
                 }
             });
 
-            for (T element : source) {
-                if (condition.test(element)) {
-                    result.add(element);
-                }
-            }
-
+//            for (T element : source) {
+//                if (condition.test(element)) {
+//                    result.add(element);
+//                }
+//            }
 
 //            for (Iterator<T> iterator = source.iterator(); iterator.hasNext(); ) {
 //                T element = iterator.next();
@@ -73,11 +75,27 @@ public class Example2 {
     public void findIvanWithDeveloperExperienceAndWorkedInEpamMoreThenYearAtOnePositionUsingFilterUtil() {
         List<Employee> employees = Example1.getEmployees();
 
-        List<Employee> result1 = FilterUtil.from(employees)
-                                           .getResult();
-
-        List<Employee> result = null;
+        List<Employee> result = FilterUtil.from(employees)
+                                          .filter(employee -> "Иван".equals(employee.getPerson().getFirstName()))
+                                          .filter(this::hasDeveloperExpirience)
+                                          .filter(this::workedInEpamMoreThenYear)
+                                          .getResult();
 
         assertThat(result, contains(employees.get(0), employees.get(5)));
+    }
+
+    private boolean workedInEpamMoreThenYear(Employee employee) {
+        return !FilterUtil.from(employee.getJobHistory())
+                          .filter(entry -> "EPAM".equals(entry.getEmployer()))
+                          .filter(entry -> entry.getDuration() > 1)
+                          .getResult()
+                          .isEmpty();
+    }
+
+    private boolean hasDeveloperExpirience(Employee employee) {
+        return !FilterUtil.from(employee.getJobHistory())
+                          .filter(entry -> "dev".equals(entry.getPosition()))
+                          .getResult()
+                          .isEmpty();
     }
 }

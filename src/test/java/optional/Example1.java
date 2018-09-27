@@ -49,7 +49,7 @@ class Example1 {
     void orElseThrow() {
         Optional<String> optional = Optional.empty();
 
-        assertThrows(IllegalArgumentException.class, () -> optional.orElseThrow(IllegalArgumentException::new));
+        assertThrows(IllegalArgumentException.class, () -> optional.orElseThrow(() -> new IllegalArgumentException("123")));
     }
 
     @Test
@@ -67,7 +67,7 @@ class Example1 {
 
     @Test
     void mapFilterOrElse() {
-        LinkedList<String> data = new LinkedList<>(Arrays.asList("qwe", "10", "30"));
+        LinkedList<String> data = new LinkedList<>(Arrays.asList("11", "10", "30"));
         Optional<Deque<String>> optional = Optional.of(data);
 
         Predicate<String> isDigit = Pattern.compile("\\d+").asPredicate();
@@ -76,6 +76,7 @@ class Example1 {
                                            .map(Integer::valueOf);
 
         assertThat(result.isPresent(), is(true));
+        assertThat(result.get(), is(11));
     }
 
     @Test
