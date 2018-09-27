@@ -45,11 +45,7 @@ class Exercise2 {
 
     @Test
     void implementsIntegerMultiplierUsingExpressionLambda() {
-        Multiplier<Integer> multiplier = null;
-
-        multiplier = (i1, i2) -> i1*i2;
-
-        testIntegerMultiplier(multiplier);
+        testIntegerMultiplier((i1, i2) -> i1*i2);
     }
 
     private void testIntegerMultiplier(Multiplier<Integer> multiplier) {
@@ -95,7 +91,7 @@ class Exercise2 {
     void implementsStringMultiplierUsingObjectMethodReference() {
         Multiplier<String> multiplier = null;
 
-        multiplier = new Exercise2()::stringSumWithDelimiter;
+        multiplier = this::stringSumWithDelimiter;
 
         assertThat(multiplier.multiply("a", 3), is("a-a-a"));
         assertThat(multiplier.multiply("qwerty", 0), is(emptyString()));
