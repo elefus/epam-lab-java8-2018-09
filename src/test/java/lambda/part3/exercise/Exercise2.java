@@ -78,7 +78,7 @@ class Exercise2 {
         // TODO                        .flatMap(String -> Character(letter))
         // TODO                        .map(Character -> Integer(code letter)
         // TODO                        .getMapped();
-        assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev")));
+        assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
     private static List<Integer> calcCodes(String...strings) {
