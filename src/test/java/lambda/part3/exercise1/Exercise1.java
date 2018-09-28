@@ -31,14 +31,12 @@ public class Exercise1 {
         Function<String, Integer> stringLengthExtractor = String::length;
 
         // функция извлечения длины полного имени из сотрудника fullNameLengthExtractor: Employee -> Integer
-        Function<Employee, Integer> fullNameLengthExtractor =
-                employee -> personExtractor
-                        .andThen(fullNameExtractor)
-                        .andThen(stringLengthExtractor)
-                        .apply(employee);
+        Function<Employee, Integer> fullNameLengthExtractor = personExtractor
+                .andThen(fullNameExtractor)
+                .andThen(stringLengthExtractor);
 
         // преобразование списка employees в lengths используя fullNameLengthExtractor
-        employees.forEach(t -> lengths.add(fullNameLengthExtractor.apply(t)));
+        employees.forEach(e -> lengths.add(fullNameLengthExtractor.apply(e)));
 
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
