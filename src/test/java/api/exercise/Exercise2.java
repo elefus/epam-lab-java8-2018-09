@@ -60,7 +60,7 @@ class Exercise2 {
         assertThat(log2(2), is(1));
         assertThat(log2(3), is(1));
         assertThat(log2(4), is(2));
-        assertThat(log2(Integer.MAX_VALUE), is(3));
+        assertThat(log2(Integer.MAX_VALUE), is(30));
     }
 
     @Test
