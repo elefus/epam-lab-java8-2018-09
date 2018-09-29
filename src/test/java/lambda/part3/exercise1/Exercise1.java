@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,13 +19,21 @@ public class Exercise1 {
     @Test
     public void mapEmployeesToLengthOfTheirFullNames() {
         List<Employee> employees = getEmployees();
-        List<Integer> lengths = new ArrayList<>();
 
-        // TODO функция извлечения информации о человеке из объекта сотрудника personExtractor: Employee -> Person
-        // TODO функция извлечения полного имени из информации о человеке fullNameExtractor: Person -> String
-        // TODO функция извлечения длины из строки stringLengthExtractor: String -> Integer
-        // TODO функция извлечения длины полного имени из сотрудника fullNameLengthExtractor: Employee -> Integer
-        // TODO преобразование списка employees в lengths используя fullNameLengthExtractor
+        Function<Employee, Person> personExtractor = Employee::getPerson;
+        Function<Person, String> fullNameExtractor = Person::getFullName;
+        Function<String, Integer> stringLengthExtractor = String::length;
+        Function<Employee, Integer> fullNameLengthExtractor = employee -> employee.getPerson().getFullName().length();
+        Function<List<Employee>, List<Integer>> employeesToFullNameLengths  =
+                employeeList -> {
+                    List<Integer> lengthList = new ArrayList<>();
+                    for (Employee employee : employeeList) {
+                        lengthList.add(fullNameLengthExtractor.apply(employee));
+                    }
+                    return lengthList;
+                };
+
+        List<Integer> lengths = employeesToFullNameLengths.apply(employees);
 
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
