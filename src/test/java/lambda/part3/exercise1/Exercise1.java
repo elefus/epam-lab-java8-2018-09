@@ -19,21 +19,15 @@ public class Exercise1 {
     @Test
     public void mapEmployeesToLengthOfTheirFullNames() {
         List<Employee> employees = getEmployees();
+        List<Integer> lengths = new ArrayList<>();
 
         Function<Employee, Person> personExtractor = Employee::getPerson;
         Function<Person, String> fullNameExtractor = Person::getFullName;
         Function<String, Integer> stringLengthExtractor = String::length;
-        Function<Employee, Integer> fullNameLengthExtractor = employee -> employee.getPerson().getFullName().length();
-        Function<List<Employee>, List<Integer>> employeesToFullNameLengths  =
-                employeeList -> {
-                    List<Integer> lengthList = new ArrayList<>();
-                    for (Employee employee : employeeList) {
-                        lengthList.add(fullNameLengthExtractor.apply(employee));
-                    }
-                    return lengthList;
-                };
+        Function<Employee, Integer> fullNameLengthExtractor =
+                personExtractor.andThen(fullNameExtractor).andThen(stringLengthExtractor);
 
-        List<Integer> lengths = employeesToFullNameLengths.apply(employees);
+        employees.forEach(employee -> lengths.add(fullNameLengthExtractor.apply(employee)));
 
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
