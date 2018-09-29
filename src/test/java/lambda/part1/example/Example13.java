@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class Example13 {
 
     @Test
-    void go1() {
+    void test() {
         Talkative talkative = () -> System.out.println(say());
         talkative.run();
     }
