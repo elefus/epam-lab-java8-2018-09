@@ -24,8 +24,23 @@ class Example4 {
     @Test
     void arraysParallelPrefixUsingJava8() {
         Integer[] values = {1, 6, 9, 4, -1, -4, 0, 2, 3};
+        //                   7     13     -5      2   3
+        //                     20             -3     3
+        //                            17       3
+        //                                20
 
+        // (a * b) * c = a * (b * c)
         Arrays.parallelPrefix(values, Integer::sum);
+
+        // reduce 0
+        //    sum
+        //        0 + 1 = 1
+        //                1 + 6 = 7
+        //
+
+
+
+        //
 
         assertThat(values, arrayContaining(1, 7, 16, 20, 19, 15, 15, 17, 20));
     }
@@ -38,10 +53,11 @@ class Example4 {
             values[i] = i;
         }
 
-        Arrays.parallelSetAll(values, operand -> operand + 1);
+        Arrays.parallelSetAll(values, i -> i + 1);
         assertThat(values, arrayContaining(1, 2, 3, 4, 5));
 
         // TODO set 0 for all even numbers для всех четных 0, для нечетных 1
+        Arrays.parallelSetAll(values, i -> i & 1);
         assertThat(values, arrayContaining(0, 1, 0, 1, 0));
     }
 }

@@ -2,6 +2,7 @@ package api.example;
 
 import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
+import optional.Optional;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-
 
 @SuppressWarnings({"Java8CollectionRemoveIf", "ConstantConditions", "unused"})
 class Example5 {
@@ -41,7 +41,7 @@ class Example5 {
         Person alex = new Person("Алексей", "Мельников", 20);
         Map<Person, Integer> personSalaries = new HashMap<>();
 
-        // TODO putIfAbsent
+        personSalaries.putIfAbsent(alex, 65_000);
 
         assertThat(personSalaries, hasEntry(alex, 65_000));
     }
@@ -72,12 +72,12 @@ class Example5 {
         Person alex = new Person("Алексей", "Мельников", 20);
         Map<Person, Integer> personSalaries = new HashMap<>();
 
-        // TODO computeIfAbsent
+        personSalaries.computeIfAbsent(alex, Example5::hugeOperation);
 
         assertThat(personSalaries, hasEntry(alex, 60_000));
     }
 
-    // TODO functional descriptor
+    // TODO (Person, int) → int
     private static int raiseSalary(Person person, int salary) {
         return salary + 10_000 + person.getAge() * 100;
     }
@@ -109,7 +109,8 @@ class Example5 {
         Map<Person, Integer> personSalaries = new HashMap<>();
         personSalaries.put(alex, 65_000);
 
-        // TODO replace
+        personSalaries.replace(alex, 65_000, 77_000);
+        personSalaries.replace(ivan, 77_000);
 
         assertThat(personSalaries, hasEntry(alex, 77_000));
         assertThat(personSalaries, not(hasKey(ivan)));
@@ -123,7 +124,8 @@ class Example5 {
         Map<Person, Integer> personSalaries = new HashMap<>();
         personSalaries.put(alex, 65_000);
 
-        // TODO computeIfPresent
+        personSalaries.computeIfPresent(alex, Example5::raiseSalary);
+        personSalaries.computeIfPresent(ivan, Example5::raiseSalary);
 
         assertThat(personSalaries, hasEntry(alex, 77_000));
         assertThat(personSalaries, not(hasKey(ivan)));
@@ -139,14 +141,19 @@ class Example5 {
         personSalaries.put(alex, baseSalary);
 
         BiFunction<Person, Integer, Integer> getBasicOrRiseSalary  = (person, salary) -> salary == null ? baseSalary : raiseSalary(person, salary);
-        // TODO implement using Optional
+        BiFunction<Person, Integer, Integer> getBasicOrRiseSalary1 = (person, salary) -> Optional.ofNullable(salary)
+                                                                                                 .map(prev -> raiseSalary(person, prev))
+                                                                                                 .orElse(baseSalary);
 
-        // TODO compute
+
+        personSalaries.compute(alex, getBasicOrRiseSalary);
+        personSalaries.compute(ivan, getBasicOrRiseSalary);
+        personSalaries.compute(nick, getBasicOrRiseSalary);
         assertThat(personSalaries, hasEntry(alex, 77_000));
         assertThat(personSalaries, hasEntry(ivan, 65_000));
         assertThat(personSalaries, hasEntry(nick, 65_000));
 
-        // TODO remove pair using compute
+        personSalaries.compute(nick, (person, salary) -> null);
         assertThat(personSalaries, not(hasKey(nick)));
     }
 
@@ -238,7 +245,7 @@ class Example5 {
         personSalaries.put(alex, 65_000);
         personSalaries.put(ivan, 65_000);
 
-        // TODO replaceAll
+        personSalaries.replaceAll(Example5::raiseSalary);
 
         assertThat(personSalaries, hasEntry(alex, 77_000));
         assertThat(personSalaries, hasEntry(ivan, 77_000));

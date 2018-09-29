@@ -16,7 +16,6 @@ class Example1 {
     void foriLoop() {
         List<String> list = new LinkedList<>(Arrays.asList("1", "2", "3"));
 
-
         for (int i = 0; i < list.size(); ++i) {
             assertThat(list.get(i).length(), Matchers.lessThan(2));
         }

@@ -13,6 +13,8 @@ import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.nullsFirst;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @SuppressWarnings({"Java8ListSort", "Convert2Lambda", "ComparatorCombinators"})
 class Example2 {
@@ -44,7 +46,7 @@ class Example2 {
     void sortWhitIntegerComparatorUsingJava8() {
         List<Person> people = getPersons();
 
-        Collections.sort(people, (o1, o2) -> o1.getFirstName().compareTo(o2.getFirstName()));
+        Collections.sort(people, (left, right) -> left.getFirstName().compareTo(right.getFirstName()));
 
         assertThat(people, contains(people.get(0), people.get(2), people.get(1), people.get(3)));
     }
@@ -62,8 +64,7 @@ class Example2 {
     void sortWithCombinedKeyExtractorComparatorUsingJava8() {
         List<Person> people = getPersons();
 
-        people.sort(comparing(Person::getLastName).thenComparing(Person::getFirstName)
-                                                  .thenComparing(Person::getAge));
+        people.sort(comparing(Person::getLastName).thenComparing(Person::getFirstName).thenComparing(Person::getAge));
 
         assertThat(people, contains(people.get(3), people.get(0), people.get(1), people.get(2)));
     }
@@ -85,7 +86,7 @@ class Example2 {
 
         people.sort(nullsFirst(comparing(Person::getFirstName)));
 
-        assertThat(people, contains(people.get(0), people.get(1), people.get(3)));
+        assertThat(people, contains(nullValue(), is(people.get(1)), is(people.get(2)), is(people.get(3))));
     }
 
     private static List<Person> getPersons() {
