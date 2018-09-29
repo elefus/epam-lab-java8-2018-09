@@ -32,7 +32,7 @@ class Exercise3 {
         }
 
         public List<R> force() {
-            List result = new ArrayList();
+            List<R> result = new ArrayList<>();
             list.forEach(function.andThen(result::add)::apply);
             return result;
         }
