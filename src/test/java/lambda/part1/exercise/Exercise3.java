@@ -20,7 +20,7 @@ class Exercise3 {
         Person[] persons = getPersons();
 
         // TODO use Arrays.sort + expression-lambda
-        Arrays.sort(persons, (p1, p2) -> p1.getAge() - p2.getAge());
+        Arrays.sort(persons, (p1, p2) -> Integer.compare(p1.getAge(), p2.getAge()));
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
