@@ -5,6 +5,7 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,19 +19,26 @@ class Exercise3 {
 
     private static class LazyMapHelper<T, R> {
 
+        private final List<T> source;
+        private Function<T, R> mapperFunction;
+
+        LazyMapHelper(List <T> source, Function <T, R> mapperFunction) {
+            this.source = source;
+            this.mapperFunction = mapperFunction;
+        }
+
         public static <T> LazyMapHelper<T, T> from(List<T> list) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(list, x -> x);
         }
 
         public List<R> force() {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            ArrayList<R> newList = new ArrayList <>();
+            source.forEach(element -> newList.add(mapperFunction.apply(element)));
+            return newList;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper <>(source, mapperFunction.andThen(mapping));
         }
     }
 
@@ -38,12 +46,12 @@ class Exercise3 {
     void mapEmployeesToLengthOfTheirFullNamesUsingLazyMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> lengths = null;
-        // TODO                 LazyMapHelper.from(employees)
-        // TODO                              .map(Employee -> Person)
-        // TODO                              .map(Person -> String(full name))
-        // TODO                              .map(String -> Integer(length from string))
-        // TODO                              .force();
+        List<Integer> lengths = LazyMapHelper
+                .from(employees)
+                .map(Employee::getPerson)
+                .map(Person::getFullName)
+                .map(String::length)
+                .force();
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
     }
 
