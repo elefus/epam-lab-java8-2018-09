@@ -1,6 +1,7 @@
 package lambda.part1.exercise;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,15 @@ class Exercise1 {
     void sortPersonsByAgeUsingArraysSortLocalComparator() {
         Person[] persons = getPersons();
 
-        Comparator<Person> personByAgeComparator = Comparator.comparingInt(Person::getAge);
+        class PersonByAgeComparator implements Comparator<Person> {
 
-        Arrays.sort(persons, personByAgeComparator);
+            @Override
+            public int compare(Person p1, Person p2) {
+                return Integer.compare(p1.getAge(), p2.getAge());
+            }
+        }
+
+        Arrays.sort(persons, new PersonByAgeComparator());
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
@@ -75,9 +82,11 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Predicate<Person> predicate = person -> person.getAge() == 30;
+        Predicate<Person> predicateIsAge30 = person -> person.getAge() == 30;
 
-        Person person = Iterables.find(persons, predicate);
+        Person person = FluentIterable.from(persons)
+                .firstMatch(predicateIsAge30)
+                .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
@@ -86,12 +95,14 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaAnonymousPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Person person = Iterables.find(persons, new Predicate<Person>() {
-            @Override
-            public boolean apply(Person person) {
-                return person.getAge() == 30;
-            }
-        });
+        Person person = FluentIterable.from(persons)
+                .firstMatch(new Predicate<Person>() {
+                    @Override
+                    public boolean apply(Person person) {
+                        return person.getAge() == 30;
+                    }
+                })
+                .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
