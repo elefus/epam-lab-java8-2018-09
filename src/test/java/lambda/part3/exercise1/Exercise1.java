@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,25 +30,20 @@ public class Exercise1 {
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
 
-    private static Person personExtractor(Employee employee) {
-        return employee.getPerson();
-    }
+    private static Function<Employee, Person> personExtractor = Employee::getPerson;
 
-    private static String fullNameExtractor(Person person) {
-        return person.getFirstName() + " " + person.getLastName();
-    }
+    private static Function<Person, String> fullNameExtractor = Person::getFullName;
 
-    private static Integer stringLengthExtractor(String s) {
-        return s.length();
-    }
+    private static Function<String, Integer> stringLengthExtractor = String::length;
 
-    private static Integer fullNameLengthExtractor(Employee employee) {
-        return stringLengthExtractor(fullNameExtractor(personExtractor(employee)));
-    }
+    private static Function<Employee, Integer> fullNameLengthExtractor = employee -> personExtractor
+            .andThen(fullNameExtractor)
+            .andThen(stringLengthExtractor)
+            .apply(employee);
 
     private static List<Integer> employeesToLengths(List<Employee> employees) {
         return employees.stream()
-                .map(Exercise1::fullNameLengthExtractor)
+                .map(fullNameLengthExtractor)
                 .collect(Collectors.toList());
     }
 
