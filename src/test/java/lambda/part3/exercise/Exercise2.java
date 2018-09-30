@@ -40,7 +40,10 @@ class Exercise2 {
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            throw new UnsupportedOperationException();
+            List<R> newList = new ArrayList<>();
+            source.forEach((s) ->
+                    newList.add(mapping.apply(s)));
+            return MapHelper.from(newList);
         }
 
         /**
@@ -50,7 +53,10 @@ class Exercise2 {
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            throw new UnsupportedOperationException();
+            List<R> newList = new ArrayList<>();
+            source.forEach((t) ->
+            newList.addAll(flatMapping.apply(t)));
+            return MapHelper.from(newList);
         }
     }
 
@@ -58,7 +64,7 @@ class Exercise2 {
     void mapEmployeesToLengthOfTheirFullNamesUsingMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> lengths = null;
+        List<Integer> lengths =
         MapHelper.from(employees)
         .map(Employee::getPerson)
         .map(Person::getFullName)
@@ -72,14 +78,22 @@ class Exercise2 {
     void mapEmployeesToCodesOfLetterTheirPositionsUsingMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> codes = null;
-/*         MapHelper.from(employees)
-         .flatMap(Employee -> JobHistoryEntry)
-         .map(JobHistoryEntry -> String(position))
-         .flatMap(String -> Character(letter))
-         .map(Character -> Integer(code letter)
-         .getMapped();*/
+        List<Integer> codes =
+        MapHelper.from(employees)
+         .flatMap(Employee::getJobHistory)
+         .map(JobHistoryEntry::getPosition)
+         .flatMap(Exercise2::getListCharacter)
+         .map((character) -> (int)character)
+         .getMapped();
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
+    }
+
+    private static List<Character> getListCharacter(String string) {
+        List<Character> listChar = new ArrayList<>();
+        for (Character c: string.toCharArray()) {
+            listChar.add(c);
+        }
+        return listChar;
     }
 
     private static List<Integer> calcCodes(String...strings) {
