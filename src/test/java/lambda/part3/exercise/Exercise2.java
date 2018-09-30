@@ -40,7 +40,9 @@ class Exercise2 {
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            throw new UnsupportedOperationException();
+            List<R> result = new ArrayList<>();
+            getMapped().forEach(element-> result.add(mapping.apply(element)));
+            return from(result);
         }
 
         /**
@@ -50,7 +52,9 @@ class Exercise2 {
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            throw new UnsupportedOperationException();
+            List<R> result = new ArrayList<>();
+            getMapped().forEach(element-> result.addAll(flatMapping.apply(element)));
+            return from(result);
         }
     }
 
@@ -58,19 +62,38 @@ class Exercise2 {
     void mapEmployeesToLengthOfTheirFullNamesUsingMapHelper() {
         List<Employee> employees = getEmployees();
 
+        Function<Employee, Person> personExtractor = Employee::getPerson;
+        Function<Person, String> fullNameExtractor = Person::getFullName;
+        Function<String, Integer> stringToLengthConvertor = String::length;
+
         List<Integer> lengths = null;
         // TODO                 MapHelper.from(employees)
         // TODO                          .map(Employee -> Person)
         // TODO                          .map(Person -> String(full name))
         // TODO                          .map(String -> Integer(length of string))
         // TODO                          .getMapped();
+       lengths = MapHelper.from(employees)
+                .map(personExtractor)
+                .map(fullNameExtractor)
+                .map(stringToLengthConvertor)
+                .getMapped();
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
+    }
+
+    private static List<Character> getCharacters(String str) {
+        List<Character> result = new ArrayList<>();
+        for (char ch : str.toCharArray())
+            result.add(ch);
+        return result;
     }
 
     @Test
     void mapEmployeesToCodesOfLetterTheirPositionsUsingMapHelper() {
         List<Employee> employees = getEmployees();
-
+        Function<Employee, List<JobHistoryEntry>> jobHistoryExtractor = Employee::getJobHistory;
+        Function<JobHistoryEntry, String> jobPositionExtractor = JobHistoryEntry::getPosition;
+        Function<String, List<Character>> stringToChars =  Exercise2::getCharacters;
+        Function<Character, Integer> charToCode = ch -> (int)ch;
         List<Integer> codes = null;
         // TODO               MapHelper.from(employees)
         // TODO                        .flatMap(Employee -> JobHistoryEntry)
@@ -78,6 +101,12 @@ class Exercise2 {
         // TODO                        .flatMap(String -> Character(letter))
         // TODO                        .map(Character -> Integer(code letter)
         // TODO                        .getMapped();
+        codes = MapHelper.from(employees)
+                .flatMap(jobHistoryExtractor)
+                .map(jobPositionExtractor)
+                .flatMap(stringToChars)
+                .map(charToCode)
+                .getMapped();
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
