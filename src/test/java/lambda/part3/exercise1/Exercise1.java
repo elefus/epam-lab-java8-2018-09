@@ -5,10 +5,10 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +18,7 @@ public class Exercise1 {
     @Test
     public void mapEmployeesToLengthOfTheirFullNames() {
         List<Employee> employees = getEmployees();
-        List<Integer> lengths = new ArrayList<>();
+        List<Integer> lengths = employeesToLengths(employees);
 
         // TODO функция извлечения информации о человеке из объекта сотрудника personExtractor: Employee -> Person
         // TODO функция извлечения полного имени из информации о человеке fullNameExtractor: Person -> String
@@ -27,6 +27,28 @@ public class Exercise1 {
         // TODO преобразование списка employees в lengths используя fullNameLengthExtractor
 
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
+    }
+
+    private static Person personExtractor(Employee employee) {
+        return employee.getPerson();
+    }
+
+    private static String fullNameExtractor(Person person) {
+        return person.getFirstName() + " " + person.getLastName();
+    }
+
+    private static Integer stringLengthExtractor(String s) {
+        return s.length();
+    }
+
+    private static Integer fullNameLengthExtractor(Employee employee) {
+        return stringLengthExtractor(fullNameExtractor(personExtractor(employee)));
+    }
+
+    private static List<Integer> employeesToLengths(List<Employee> employees) {
+        return employees.stream()
+                .map(Exercise1::fullNameLengthExtractor)
+                .collect(Collectors.toList());
     }
 
     public static List<Employee> getEmployees() {
