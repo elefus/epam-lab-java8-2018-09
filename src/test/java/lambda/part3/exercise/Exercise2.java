@@ -84,20 +84,10 @@ class Exercise2 {
                 .from(employees)
                 .flatMap(Employee::getJobHistory)
                 .map(JobHistoryEntry::getPosition)
-                .flatMap(this::getCharacters)
-                .map(character -> (int)character)
+                .flatMap(Exercise2::calcCodes)
                 .getMapped();
 
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
-    }
-
-    @NotNull
-    private List<Character> getCharacters(String positionName) {
-        List<Character> list = new ArrayList<>();
-        for (char aChar : positionName.toCharArray()) {
-            list.add(aChar);
-        }
-        return list;
     }
 
     private static List<Integer> calcCodes(String... strings) {
