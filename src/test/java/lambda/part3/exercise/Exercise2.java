@@ -59,11 +59,12 @@ class Exercise2 {
         List<Employee> employees = getEmployees();
 
         List<Integer> lengths = null;
-        // TODO                 MapHelper.from(employees)
-        // TODO                          .map(Employee -> Person)
-        // TODO                          .map(Person -> String(full name))
-        // TODO                          .map(String -> Integer(length of string))
-        // TODO                          .getMapped();
+        MapHelper.from(employees)
+        .map(Employee::getPerson)
+        .map(Person::getFullName)
+        .map(String::length)
+        .getMapped();
+
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
     }
 
@@ -72,12 +73,12 @@ class Exercise2 {
         List<Employee> employees = getEmployees();
 
         List<Integer> codes = null;
-        // TODO               MapHelper.from(employees)
-        // TODO                        .flatMap(Employee -> JobHistoryEntry)
-        // TODO                        .map(JobHistoryEntry -> String(position))
-        // TODO                        .flatMap(String -> Character(letter))
-        // TODO                        .map(Character -> Integer(code letter)
-        // TODO                        .getMapped();
+/*         MapHelper.from(employees)
+         .flatMap(Employee -> JobHistoryEntry)
+         .map(JobHistoryEntry -> String(position))
+         .flatMap(String -> Character(letter))
+         .map(Character -> Integer(code letter)
+         .getMapped();*/
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
