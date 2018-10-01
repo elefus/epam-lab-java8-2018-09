@@ -56,9 +56,7 @@ class Exercise2 {
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
             List<R> result = new ArrayList<>();
-            for (T t : source) {
-                result.addAll(flatMapping.apply(t));
-            }
+            source.forEach(t -> result.addAll(flatMapping.apply(t)));
             return from(result);
         }
     }
