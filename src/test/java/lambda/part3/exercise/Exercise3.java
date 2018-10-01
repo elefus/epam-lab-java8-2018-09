@@ -5,11 +5,11 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -31,9 +31,9 @@ class Exercise3 {
         }
 
         public List<R> force() {
-            return source.stream()
-                    .map(function)
-                    .collect(Collectors.toList());
+            List<R> result = new ArrayList<>();
+            source.forEach(t -> function.andThen(result::add).apply(t));
+            return result;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
