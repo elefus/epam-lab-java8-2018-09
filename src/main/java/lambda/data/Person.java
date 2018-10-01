@@ -1,8 +1,12 @@
 package lambda.data;
 
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Person {
+public class Person implements Serializable {
 
     private final String firstName;
     private final String lastName;
@@ -14,12 +18,16 @@ public class Person {
         this.age = age;
     }
 
-    public String getFirstName(Person this) {
-        return firstName;
+
+    public Person() {
+        firstName = "default";
+        lastName = "default";
+        age = -1;
     }
 
-    public String getLastName() {
-        return lastName;
+
+    public String getLastName(Person this) {
+        return this.lastName;
     }
 
     public int getAge() {
