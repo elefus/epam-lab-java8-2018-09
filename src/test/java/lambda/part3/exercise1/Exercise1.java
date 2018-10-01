@@ -31,7 +31,7 @@ public class Exercise1 {
         Function<String, Integer> stringLengthExtractor = String::length;
 
         // функция извлечения длины полного имени из сотрудника fullNameLengthExtractor: Employee -> Integer
-        Function<Employee, Integer> fullNameLengthExtractor = employee -> employee.getPerson().getFullName().length();
+        Function<Employee, Integer> fullNameLengthExtractor = personExtractor.andThen(fullNameExtractor).andThen(stringLengthExtractor);
 
         // преобразование списка employees в lengths используя fullNameLengthExtractor
         employees.forEach(emp -> lengths.add(fullNameLengthExtractor.apply(emp)));
