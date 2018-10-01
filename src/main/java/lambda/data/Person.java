@@ -36,8 +36,8 @@ public class Person {
         if (other == null || getClass() != other.getClass()) return false;
         Person person = (Person) other;
         return age == person.age
-            && Objects.equals(firstName, person.firstName)
-            && Objects.equals(lastName, person.lastName);
+                && Objects.equals(firstName, person.firstName)
+                && Objects.equals(lastName, person.lastName);
     }
 
     @Override
@@ -48,8 +48,8 @@ public class Person {
     @Override
     public String toString() {
         return "Person@" + hashCode() + ": {"
-             + "firstName='" + firstName + "', "
-             + "lastName='" + lastName + "', "
-             + "age=" + age + "}";
+                + "firstName='" + firstName + "', "
+                + "lastName='" + lastName + "', "
+                + "age=" + age + "}";
     }
 }
