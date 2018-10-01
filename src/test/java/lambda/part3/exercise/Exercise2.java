@@ -38,9 +38,9 @@ class Exercise2 {
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            return new MapHelper<>(source.stream()
-                    .map(mapping)
-                    .collect(Collectors.toList()));
+            List<R> result = new ArrayList<>();
+            source.forEach(t -> mapping.andThen(result::add).apply(t));
+            return new MapHelper<>(result);
         }
 
         /**
@@ -50,13 +50,9 @@ class Exercise2 {
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            return new MapHelper<>(source.stream()
-                    .map(flatMapping)
-                    .reduce((r1, r2) -> {
-                        r1.addAll(r2);
-                        return r1;
-                        })
-                    .orElseGet(null));
+            List<R> result = new ArrayList<>();
+            source.forEach(t -> flatMapping.andThen(result::addAll).apply(t));
+            return new MapHelper<>(result);
         }
     }
 
