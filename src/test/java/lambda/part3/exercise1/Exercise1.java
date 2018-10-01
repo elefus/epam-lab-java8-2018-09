@@ -36,10 +36,9 @@ public class Exercise1 {
 
     private static Function<String, Integer> stringLengthExtractor = String::length;
 
-    private static Function<Employee, Integer> fullNameLengthExtractor = employee -> personExtractor
+    private static Function<Employee, Integer> fullNameLengthExtractor = personExtractor
             .andThen(fullNameExtractor)
-            .andThen(stringLengthExtractor)
-            .apply(employee);
+            .andThen(stringLengthExtractor);
 
     private static List<Integer> employeesToLengths(List<Employee> employees) {
         return employees.stream()
