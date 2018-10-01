@@ -17,6 +17,7 @@ class Exercise1 {
         Person[] persons = getPersons();
 
         // TODO use Arrays.sort
+        //TODO for init commit
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
