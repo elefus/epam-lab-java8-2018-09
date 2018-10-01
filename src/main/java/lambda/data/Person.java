@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Person implements Serializable {
+import java.util.Objects;
+
+public class Person {
 
     private final String firstName;
     private final String lastName;
@@ -29,6 +32,8 @@ public class Person implements Serializable {
 
     public String getLastName(Person this) {
         return this.lastName;
+    public String getLastName() {
+        return lastName;
     }
 
     public int getAge() {
