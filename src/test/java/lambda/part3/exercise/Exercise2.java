@@ -10,12 +10,48 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
 class Exercise2 {
+
+    private static List<Integer> calcCodes(String... strings) {
+        List<Integer> codes = new ArrayList<>();
+        for (String string : strings) {
+            for (char letter : string.toCharArray()) {
+                codes.add((int) letter);
+            }
+        }
+        return codes;
+    }
+
+    @Test
+    void mapEmployeesToLengthOfTheirFullNamesUsingMapHelper() {
+        List<Employee> employees = getEmployees();
+
+        List<Integer> lengths = MapHelper.from(employees)
+                .map(Employee::getPerson)
+                .map(Person::getFullName)
+                .map(String::length)
+                .getMapped();
+        assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
+    }
+
+    @Test
+    void mapEmployeesToCodesOfLetterTheirPositionsUsingMapHelper() {
+        List<Employee> employees = getEmployees();
+
+        List<Integer> codes = MapHelper.from(employees)
+                .flatMap(Employee::getJobHistory)
+                .map(JobHistoryEntry::getPosition)
+                .flatMap(str -> str.chars().mapToObj(e -> (char) e).collect(Collectors.toList()))
+                .map(Integer::valueOf)
+                .getMapped();
+        assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
+    }
 
     private static class MapHelper<T> {
 
@@ -37,58 +73,26 @@ class Exercise2 {
          * Создает объект для маппинга, передавая ему новый список, построенный на основе исходного.
          * Для добавления в новый список каждый элемент преобразовывается с использованием заданной функции.
          * ([T], (T -> R)) -> [R]
+         *
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            throw new UnsupportedOperationException();
+            List<R> collect = source.stream().map(mapping).collect(Collectors.toList());
+            return new MapHelper<>(collect);
         }
 
         /**
          * Создает объект для маппинга, передавая ему новый список, построенный на основе исходного.
          * Для добавления в новый список каждый элемент преобразовывается в список с использованием заданной функции.
          * ([T], (T -> [R])) -> [R]
+         *
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            throw new UnsupportedOperationException();
+
+            List<R> collect = source.stream().flatMap(item -> flatMapping.apply(item).stream()).collect(Collectors.toList());
+            return new MapHelper<>(collect);
         }
-    }
-
-    @Test
-    void mapEmployeesToLengthOfTheirFullNamesUsingMapHelper() {
-        List<Employee> employees = getEmployees();
-
-        List<Integer> lengths = null;
-        // TODO                 MapHelper.from(employees)
-        // TODO                          .map(Employee -> Person)
-        // TODO                          .map(Person -> String(full name))
-        // TODO                          .map(String -> Integer(length of string))
-        // TODO                          .getMapped();
-        assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
-    }
-
-    @Test
-    void mapEmployeesToCodesOfLetterTheirPositionsUsingMapHelper() {
-        List<Employee> employees = getEmployees();
-
-        List<Integer> codes = null;
-        // TODO               MapHelper.from(employees)
-        // TODO                        .flatMap(Employee -> JobHistoryEntry)
-        // TODO                        .map(JobHistoryEntry -> String(position))
-        // TODO                        .flatMap(String -> Character(letter))
-        // TODO                        .map(Character -> Integer(code letter)
-        // TODO                        .getMapped();
-        assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
-    }
-
-    private static List<Integer> calcCodes(String...strings) {
-        List<Integer> codes = new ArrayList<>();
-        for (String string : strings) {
-            for (char letter : string.toCharArray()) {
-                codes.add((int) letter);
-            }
-        }
-        return codes;
     }
 
     private static List<Employee> getEmployees() {
