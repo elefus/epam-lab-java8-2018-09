@@ -5,6 +5,7 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,19 +19,26 @@ class Exercise3 {
 
     private static class LazyMapHelper<T, R> {
 
+        private List<T> source;
+        private Function<T, R> function;
+
+        private LazyMapHelper(List<T> list, Function<T, R> function) {
+            this.source = list;
+            this.function = function;
+        }
+
         public static <T> LazyMapHelper<T, T> from(List<T> list) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(list, t -> t);
         }
 
         public List<R> force() {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            ArrayList<R> targetList = new ArrayList<>();
+            source.forEach(o -> targetList.add(function.apply(o)));
+            return targetList;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(source, function.andThen(mapping));
         }
     }
 
@@ -38,7 +46,11 @@ class Exercise3 {
     void mapEmployeesToLengthOfTheirFullNamesUsingLazyMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> lengths = null;
+        List<Integer> lengths = LazyMapHelper.from(employees)
+                                             .map(Employee::getPerson)
+                                             .map(Person::getFullName)
+                                             .map(String::length)
+                                             .force();
         // TODO                 LazyMapHelper.from(employees)
         // TODO                              .map(Employee -> Person)
         // TODO                              .map(Person -> String(full name))
