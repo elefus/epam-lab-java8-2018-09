@@ -13,26 +13,41 @@ import java.util.List;
 import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
 class Exercise4 {
 
     private static class LazyCollectionHelper<T, R> {
 
-        public static <T> LazyCollectionHelper<T, T> from(List<T> list) {
-            throw new UnsupportedOperationException();
+        private List<T> source;
+        private Function<T, List<R>> function;
+
+        private LazyCollectionHelper(List<T> source, Function<T, List<R>> function) {
+            this.source = source;
+            this.function = function;
+        }
+
+        public static <T> LazyCollectionHelper<T, T> from(List<T> source) {
+            return new LazyCollectionHelper<>(source, Collections::singletonList);
         }
 
         public <U> LazyCollectionHelper<T, U> flatMap(Function<R, List<U>> flatMapping) {
-            throw new UnsupportedOperationException();
+            return new LazyCollectionHelper<>(source, t -> generalPart(function.apply(t), flatMapping));
         }
 
         public <U> LazyCollectionHelper<T, U> map(Function<R, U> mapping) {
-            throw new UnsupportedOperationException();
+            return new LazyCollectionHelper<>(source, t -> generalPart(function.apply(t), mapping.andThen(Collections::singletonList)));
         }
 
         public List<R> force() {
-            throw new UnsupportedOperationException();
+            return generalPart(source, function);
+        }
+
+        private static <O, M> List<M> generalPart(List<O> list, Function<O, List<M>> function) {
+            List<M> result = new ArrayList<>();
+            list.forEach(function.andThen(result::addAll)::apply);
+            return result;
         }
     }
 
@@ -40,17 +55,38 @@ class Exercise4 {
     void mapEmployeesToCodesOfLetterTheirPositionsUsingLazyFlatMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> codes = null;
+        List<Integer> codes = LazyCollectionHelper.from(employees)
+                                                  .flatMap(Employee::getJobHistory)
+                                                  .map(JobHistoryEntry::getPosition)
+                                                  .flatMap(string -> {
+                                                      char[] chars = string.toCharArray();
+                                                      List<Character> characterList = new ArrayList<>();
+                                                      for (char c : chars) {
+                                                          characterList.add(c);
+                                                      }
+                                                      return characterList;
+                                                  })
+                                                  .map(c -> (int) c)
+                                                  .force();
         // TODO              LazyCollectionHelper.from(employees)
         // TODO                                  .flatMap(Employee -> JobHistoryEntry)
         // TODO                                  .map(JobHistoryEntry -> String(position))
         // TODO                                  .flatMap(String -> Character(letter))
         // TODO                                  .map(Character -> Integer(code letter)
         // TODO                                  .force();
+
         assertThat(codes, Matchers.contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
-    private static List<Integer> calcCodes(String...strings) {
+    @Test
+    void mapEmployeesUsingLazyFlatMapHelper() {
+        List<Employee> employees = getEmployees();
+        List<Employee> employeeResultList = LazyCollectionHelper.from(employees)
+                                                                .force();
+        assertEquals(employees, employeeResultList);
+    }
+
+    private static List<Integer> calcCodes(String... strings) {
         List<Integer> codes = new ArrayList<>();
         for (String string : strings) {
             for (char letter : string.toCharArray()) {
