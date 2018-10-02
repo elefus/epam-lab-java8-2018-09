@@ -7,7 +7,7 @@ class Example13 {
 
     @Test
     void test() {
-        Talkative talkative = () -> System.out.println(say());
+        Talkative talkative = () -> System.out.println(Talkative.empty().say());
         talkative.run();
     }
 
@@ -17,7 +17,12 @@ class Example13 {
 }
 
 @SuppressWarnings("all")
+@FunctionalInterface
 interface Talkative extends Runnable {
+
+    static Talkative empty() {
+        return () -> {};
+    }
 
     default String say() {
         return "Hello!";
