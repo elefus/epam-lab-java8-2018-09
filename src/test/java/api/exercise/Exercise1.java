@@ -8,21 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings({"ConstantConditions", "unused", "MismatchedQueryAndUpdateOfCollection"})
 class Exercise1 {
-
-    enum Status {
-        UNKNOWN,
-        PENDING,
-        COMMENTED,
-        ACCEPTED,
-        DECLINED
-    }
 
     @Test
     void acceptGreaterThan21OthersDecline() {
@@ -34,7 +23,7 @@ class Exercise1 {
         candidates.put(ivan, Status.PENDING);
         candidates.put(helen, Status.PENDING);
 
-        // TODO implementation
+        candidates.replaceAll((person, status) -> person.getAge() > 21 ? Status.ACCEPTED : Status.DECLINED);
 
         assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
         assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
@@ -55,7 +44,8 @@ class Exercise1 {
         candidates.put(new Person("b", "c", 16), Status.PENDING);
         candidates.put(new Person("b", "c", 5), Status.PENDING);
 
-        // TODO implementation
+        candidates.entrySet().removeIf(entry -> entry.getKey().getAge() <= 21);
+        candidates.replaceAll((person, status) -> Status.ACCEPTED);
 
         assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
         assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
@@ -71,11 +61,9 @@ class Exercise1 {
         candidates.put(alex, Status.PENDING);
         candidates.put(ivan, Status.PENDING);
 
-        // TODO implementation
-
-        Status alexStatus = null;
-        Status ivanStatus = null;
-        Status helenStatus = null;
+        Status alexStatus = candidates.getOrDefault(alex, Status.UNKNOWN);
+        Status ivanStatus = candidates.getOrDefault(ivan, Status.UNKNOWN);
+        Status helenStatus = candidates.getOrDefault(helen, Status.UNKNOWN);
 
         assertThat(alexStatus, is(Status.PENDING));
         assertThat(ivanStatus, is(Status.PENDING));
@@ -97,10 +85,18 @@ class Exercise1 {
         newValues.put(alex, Status.DECLINED);
         newValues.put(helen, Status.PENDING);
 
-        // TODO implementation
+        oldValues.forEach(newValues::putIfAbsent);
 
         assertThat(newValues, hasEntry(alex, Status.DECLINED));
         assertThat(newValues, hasEntry(ivan, Status.ACCEPTED));
         assertThat(newValues, hasEntry(helen, Status.PENDING));
+    }
+
+    enum Status {
+        UNKNOWN,
+        PENDING,
+        COMMENTED,
+        ACCEPTED,
+        DECLINED
     }
 }
