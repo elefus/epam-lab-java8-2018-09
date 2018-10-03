@@ -1,5 +1,6 @@
 package lambda.part4.example;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -7,7 +8,7 @@ import java.util.function.Predicate;
 public interface FluentIterable<T> {
 
     static <T> FluentIterable<T> of(T...values) {
-        return new FluentIterableImpl<>(values);
+        return of(Arrays.asList(values));
     }
 
     static <T> FluentIterable<T> of(Iterable<T> source) {
