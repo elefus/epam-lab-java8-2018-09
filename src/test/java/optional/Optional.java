@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class Optional<T> {
 
@@ -50,6 +51,25 @@ public class Optional<T> {
         }
     }
 
+    public void ifPresentOrElse(Consumer<T> action, Runnable onEmptyAction) {
+        if (isPresent()) {
+            ifPresent(action);
+        } else {
+            onEmptyAction.run();
+        }
+    }
+
+    public Optional<T> or(Supplier<? extends Optional<? extends T>> supplier) {
+        Objects.requireNonNull(supplier);
+        if (isPresent()) {
+            return this;
+        } else {
+            @SuppressWarnings("unchecked")
+            Optional<T> result = (Optional<T>) supplier.get();
+            return Objects.requireNonNull(result);
+        }
+    }
+
     public T orElse(T defaultValue) {
         return isPresent() ? value : defaultValue;
     }
@@ -81,5 +101,13 @@ public class Optional<T> {
 
     public <R> Optional<R> flatMap(Function<T, Optional<R>> mapper) {
         return isPresent() ? mapper.apply(value) : empty();
+    }
+
+    public Stream<T> stream() {
+        if (isPresent()) {
+            return Stream.of(value);
+        } else {
+            return Stream.empty();
+        }
     }
 }

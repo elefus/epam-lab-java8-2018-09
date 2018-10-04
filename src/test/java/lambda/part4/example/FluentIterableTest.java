@@ -1,11 +1,14 @@
 package lambda.part4.example;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyArray;
 
 class FluentIterableTest {
@@ -49,18 +52,43 @@ class FluentIterableTest {
         }
     }
 
-    @Test
-    void name() {
+    @Nested
+    class Skip {
 
-    }
+        @Test
+        void onEmptySource() {
+            FluentIterable<Object> source = FluentIterable.of();
 
-    @Test
-    void name2() {
+            List<Object> result = source.skip(10).toList();
 
-    }
+            assertThat(result, empty());
+        }
 
-    @Test
-    void name3() {
+        @Test
+        void whenSkip0() {
+            FluentIterable<Integer> source = FluentIterable.of(1, 2, 3);
 
+            List<Integer> result = source.skip(0).toList();
+
+            assertThat(result, contains(1, 2, 3));
+        }
+
+        @Test
+        void whenSkipMoreThanPresent() {
+            FluentIterable<Integer> source = FluentIterable.of(1, 2, 3);
+
+            List<Integer> result = source.skip(10).toList();
+
+            assertThat(result, empty());
+        }
+
+        @Test
+        void whenSkipLessThanPresent() {
+            FluentIterable<Integer> source = FluentIterable.of(1, 2, 3);
+
+            List<Integer> result = source.skip(1).toList();
+
+            assertThat(result, contains(2, 3));
+        }
     }
 }

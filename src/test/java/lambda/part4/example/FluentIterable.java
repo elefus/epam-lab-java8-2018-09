@@ -26,6 +26,13 @@ public interface FluentIterable<T> {
      */
     FluentIterable<T> filter(Predicate<? super T> predicate);
 
+    FluentIterable<T> skip(long n);
+
+    FluentIterable<T> limit(long maxSize);
+
+    FluentIterable<T> distnict();
+
+
     List<T> toList();
 
     /**

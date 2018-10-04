@@ -2,15 +2,16 @@ package lambda.part4.example;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import optional.Optional;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Value
-public class StageFilter<T> implements Iterable<T> {
+class StageFilter<T> implements Iterable<T> {
 
     Iterator<T> source;
     Predicate<? super T> condition;
@@ -18,7 +19,7 @@ public class StageFilter<T> implements Iterable<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new UglyOptionalIterator<>(source, condition);
+        return new PrimitiveIterator();
     }
 
     private class PrimitiveIterator implements Iterator<T> {
@@ -135,16 +136,21 @@ public class StageFilter<T> implements Iterable<T> {
         private final Iterator<T> source;
         private final Predicate<? super T> condition;
 
-        private Optional<T> next = Optional.empty();
+        private Optional<Optional<Optional<T>>> foundedElement = Optional.empty();
 
         @Override
         public boolean hasNext() {
-            throw new UnsupportedOperationException();
+            foundedElement = foundedElement.or(this::findNextMatchesElement);
+            return foundedElement.flatMap(Function.identity())
+                                 .isPresent();
         }
 
         @Override
         public T next() {
-            throw new UnsupportedOperationException();
+            return foundedElement.or(this::findNextMatchesElement)
+                                 .flatMap(Function.identity())
+                                 .orElseThrow(NoSuchElementException::new)
+                                 .orElse(null);
         }
 
         private Optional<Optional<Optional<T>>> findNextMatchesElement() {

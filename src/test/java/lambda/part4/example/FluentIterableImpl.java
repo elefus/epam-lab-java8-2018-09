@@ -19,6 +19,21 @@ public class FluentIterableImpl<T> implements FluentIterable<T> {
     }
 
     @Override
+    public FluentIterable<T> skip(long n) {
+        return new FluentIterableImpl<>(new StageSkip<>(source.iterator(), n));
+    }
+
+    @Override
+    public FluentIterable<T> limit(long maxSize) {
+        return new FluentIterableImpl<>(new StageLimit<>(source.iterator(), maxSize));
+    }
+
+    @Override
+    public FluentIterable<T> distnict() {
+        return new FluentIterableImpl<>(new StageDistinct<>(source.iterator()));
+    }
+
+    @Override
     public List<T> toList() {
         ArrayList<T> result = new ArrayList<>();
         source.forEach(result::add);
