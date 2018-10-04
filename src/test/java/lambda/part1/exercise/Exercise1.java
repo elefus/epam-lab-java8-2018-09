@@ -96,13 +96,7 @@ class Exercise1 {
     @Test
     void findFirstWithAge30UsingGuavaAnonymousPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
-
-//        Predicate<Person> personPredicate = new Predicate<Person>() {
-//            @Override
-//            public boolean apply(Person person) {
-//                return ((Integer) 30).equals(person.getAge());
-//            }
-//        };
+        
         Person person = FluentIterable.from(persons)
                                       .firstMatch(new Predicate<Person>() {
                                           @Override
