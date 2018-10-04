@@ -19,7 +19,14 @@ class Exercise1 {
     void sortPersonsByAgeUsingArraysSortLocalComparator() {
         Person[] persons = getPersons();
 
-        Arrays.sort(persons, new PersonComparator<>());
+        class PersonComparator implements Comparator<Person> {
+            @Override
+            public int compare(Person firstPerson, Person secondPerson) {
+                return Integer.compare(firstPerson.getAge(), secondPerson.getAge());
+            }
+        }
+
+        Arrays.sort(persons, new PersonComparator());
 
         assertThat(persons, is(arrayContaining(
                 new Person("Иван", "Мельников", 20),
@@ -27,14 +34,6 @@ class Exercise1 {
                 new Person("Алексей", "Доренко", 40),
                 new Person("Артем", "Зимов", 45)
         )));
-    }
-
-    private static class PersonComparator<T extends Person> implements Comparator<T> {
-
-        @Override
-        public int compare(T firstPerson, T secondPerson) {
-            return Integer.compare(firstPerson.getAge(), secondPerson.getAge());
-        }
     }
 
     @Test
@@ -63,11 +62,9 @@ class Exercise1 {
         Arrays.sort(persons, new Comparator<Person>() {
             @Override
             public int compare(Person firstPerson, Person secondPerson) {
-                if(!firstPerson.getLastName().equals(secondPerson.getLastName())) {
-                    return firstPerson.getLastName().compareTo(secondPerson.getLastName());
-                } else {
-                    return firstPerson.getFirstName().compareTo(secondPerson.getFirstName());
-                }
+                return !firstPerson.getLastName().equals(secondPerson.getLastName())
+                                        ? firstPerson.getLastName().compareTo(secondPerson.getLastName())
+                                        : firstPerson.getFirstName().compareTo(secondPerson.getFirstName());
             }
         });
 
@@ -83,11 +80,15 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Predicate<Person> personPredicate = person -> ((Integer) 30).equals(person.getAge());
-
+        Predicate<Person> personPredicate = new Predicate<Person>() {
+            @Override
+            public boolean apply(Person person) {
+                return person.getAge() == 30;
+            }
+        };
         Person person = FluentIterable.from(persons)
                                       .firstMatch(personPredicate)
-                                      .get();
+                                      .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
@@ -96,15 +97,20 @@ class Exercise1 {
     void findFirstWithAge30UsingGuavaAnonymousPredicate() {
         List<Person> persons = Arrays.asList(getPersons());
 
-        Predicate<Person> personPredicate = new Predicate<Person>() {
-            @Override
-            public boolean apply(Person person) {
-                return ((Integer) 30).equals(person.getAge());
-            }
-        };
+//        Predicate<Person> personPredicate = new Predicate<Person>() {
+//            @Override
+//            public boolean apply(Person person) {
+//                return ((Integer) 30).equals(person.getAge());
+//            }
+//        };
         Person person = FluentIterable.from(persons)
-                                      .firstMatch(personPredicate)
-                                      .get();
+                                      .firstMatch(new Predicate<Person>() {
+                                          @Override
+                                          public boolean apply(Person person) {
+                                              return person.getAge() == 30;
+                                          }
+                                      })
+                                      .orNull();
 
         assertThat(person, is(new Person("Николай", "Зимов", 30)));
     }
