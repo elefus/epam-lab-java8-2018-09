@@ -24,8 +24,12 @@ class Exercise2 {
      */
     private static <T> T[] sequentialPrefix(T[] source, BinaryOperator<T> operator) {
         T[] result = Arrays.copyOf(source, source.length);
-        for (int i = 1; i < result.length; i++) {
-            result[i] = operator.apply(source[i], result[i - 1]);
+        int lengthSource = source.length;
+        for (int step = 0; step < (log2(lengthSource)) + 1; step++) {
+            int dist = pow(2, step);
+            for (int i = lengthSource - 1; i > dist - 1; i--) {
+                result[i] = operator.apply(result[i], result[i - dist]);
+            }
         }
         return result;
     }
