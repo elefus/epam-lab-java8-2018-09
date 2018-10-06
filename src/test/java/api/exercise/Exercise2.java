@@ -45,13 +45,22 @@ class Exercise2 {
     /**
      * Выполняет операцию сканирования в однопоточном режиме.
      * Не модифицирует исходный набор данных.
-     * @param source Массив исходных элементов.
+     *
+     * @param source   Массив исходных элементов.
      * @param operator Оператор сканирования.
      * @return Результат сканирования.
      * @see <a href="https://habr.com/company/epam_systems/blog/247805">Сканирование</a>
      */
     private static <T> T[] sequentialPrefix(T[] source, BinaryOperator<T> operator) {
-        throw new UnsupportedOperationException();
+        final T[] newSource = source.clone();
+        int length = newSource.length;
+        for (int i = 0; i < log2(length) + 1; i++) {
+            int pow = pow(2, i);
+            for (int j = length - 1; j > pow - 1; j--) {
+                newSource[j] = operator.apply(newSource[j], newSource[j - pow]);
+            }
+        }
+        return newSource;
     }
 
     @Test
@@ -75,12 +84,14 @@ class Exercise2 {
 
     /**
      * Вычисляет двоичный логарифм положительного числа.
+     *
      * @param value Аргумент.
      * @return Логарифм по основанию 2 от аргумента.
      * @throws IllegalArgumentException Если {@code value <= 0}
      */
     private static int log2(int value) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (value > 0) return (int) (Math.log(value) / Math.log(2));
+        throw new IllegalArgumentException();
     }
 
     @Test
@@ -105,12 +116,14 @@ class Exercise2 {
 
     /**
      * Возводит неотрицательное число в неотрицательную степень.
-     * @param base Основание степени.
+     *
+     * @param base   Основание степени.
      * @param degree Показатель степени.
      * @return Значение {@code base}<sup>{@code degree}</sup>
      * @throws IllegalArgumentException Если {@code base < 0} или {@code degree < 0}
      */
     private static int pow(int base, int degree) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (base < 0 || degree < 0) throw new IllegalArgumentException();
+        return (int) Math.pow(base, degree);
     }
 }
