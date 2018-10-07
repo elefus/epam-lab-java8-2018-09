@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInRelativeOrder;
 
 @SuppressWarnings({"unused", "ConstantConditions"})
 class Exercise2 {
@@ -37,20 +38,34 @@ class Exercise2 {
          * Создает объект для маппинга, передавая ему новый список, построенный на основе исходного.
          * Для добавления в новый список каждый элемент преобразовывается с использованием заданной функции.
          * ([T], (T -> R)) -> [R]
+         *
          * @param mapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> map(Function<T, R> mapping) {
-            throw new UnsupportedOperationException();
+            List<R> mappedSource = new ArrayList<>();
+
+            for (T t : source) {
+                mappedSource.add(mapping.apply(t));
+            }
+
+            return new MapHelper<>(mappedSource);
         }
 
         /**
          * Создает объект для маппинга, передавая ему новый список, построенный на основе исходного.
          * Для добавления в новый список каждый элемент преобразовывается в список с использованием заданной функции.
          * ([T], (T -> [R])) -> [R]
+         *
          * @param flatMapping Функция преобразования элементов.
          */
         public <R> MapHelper<R> flatMap(Function<T, List<R>> flatMapping) {
-            throw new UnsupportedOperationException();
+            List<R> flatSource = new ArrayList<>();
+
+            for (T t : source) {
+                flatSource.addAll(flatMapping.apply(t));
+            }
+
+            return new MapHelper<>(flatSource);
         }
     }
 
@@ -58,12 +73,16 @@ class Exercise2 {
     void mapEmployeesToLengthOfTheirFullNamesUsingMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> lengths = null;
         // TODO                 MapHelper.from(employees)
         // TODO                          .map(Employee -> Person)
         // TODO                          .map(Person -> String(full name))
         // TODO                          .map(String -> Integer(length of string))
         // TODO                          .getMapped();
+        List<Integer> lengths = MapHelper.from(employees)
+                .map(employee -> employee.getPerson())
+                .map(person -> person.getFullName())
+                .map(s -> s.length())
+                .getMapped();
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
     }
 
@@ -71,7 +90,18 @@ class Exercise2 {
     void mapEmployeesToCodesOfLetterTheirPositionsUsingMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> codes = null;
+        List<Integer> codes = MapHelper.from(employees)
+                .flatMap(employee -> employee.getJobHistory())
+                .map(jobHistoryEntry -> jobHistoryEntry.getPosition())
+                .flatMap(position -> {
+                    List<Character> characters = new ArrayList<>();
+                    for (char c : position.toCharArray()) {
+                        characters.add(c);
+                    }
+                    return characters;
+                })
+                .map(character -> (int)character)
+                .getMapped();
         // TODO               MapHelper.from(employees)
         // TODO                        .flatMap(Employee -> JobHistoryEntry)
         // TODO                        .map(JobHistoryEntry -> String(position))
@@ -81,7 +111,7 @@ class Exercise2 {
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
-    private static List<Integer> calcCodes(String...strings) {
+    private static List<Integer> calcCodes(String... strings) {
         List<Integer> codes = new ArrayList<>();
         for (String string : strings) {
             for (char letter : string.toCharArray()) {
