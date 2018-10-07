@@ -21,18 +21,12 @@ public class Exercise1 {
         List<Employee> employees = getEmployees();
         List<Integer> lengths = new ArrayList<>();
 
-        // TODO функция извлечения информации о человеке из объекта сотрудника personExtractor: Employee -> Person
-        Function<Employee, Person> extractPerson = employee -> employee.getPerson();
-        // TODO функция извлечения полного имени из информации о человеке fullNameExtractor: Person -> String
-        Function<Person, String> extractFullName = person -> person.getFullName();
-        // TODO функция извлечения длины из строки stringLengthExtractor: String -> Integer
-        Function<String, Integer> getFullNameLength = fullName -> fullName.length();
-        // TODO функция извлечения длины полного имени из сотрудника fullNameLengthExtractor: Employee -> Integer
-        Function<Employee, Integer> extractFullNameLength = employee -> getFullNameLength.apply(extractFullName.apply(extractPerson.apply(employee)));
-        // TODO преобразование списка employees в lengths используя fullNameLengthExtractor
-        for (Employee employee : employees) {
-            lengths.add(extractFullNameLength.apply(employee));
-        }
+        Function<Employee, Person> extractPerson = Employee::getPerson;
+        Function<Person, String> extractFullName = Person::getFullName;
+        Function<String, Integer> getFullNameLength = String::length;
+        Function<Employee, Integer> extractFullNameLength = extractPerson.andThen(extractFullName).andThen(getFullNameLength);
+
+        employees.forEach(employee -> lengths.add(extractFullNameLength.apply(employee)));
 
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
