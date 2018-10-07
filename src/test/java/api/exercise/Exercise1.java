@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static api.exercise.Exercise1.Status.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
@@ -30,15 +31,15 @@ class Exercise1 {
         Person ivan = new Person("Иван", "Стрельцов", 24);
         Person helen = new Person("Елена", "Рощина", 22);
         Map<Person, Status> candidates = new HashMap<>();
-        candidates.put(alex, Status.PENDING);
-        candidates.put(ivan, Status.PENDING);
-        candidates.put(helen, Status.PENDING);
+        candidates.put(alex, PENDING);
+        candidates.put(ivan, PENDING);
+        candidates.put(helen, PENDING);
 
-        // TODO implementation
+        candidates.replaceAll((key, value) -> key.getAge() > 21 ? ACCEPTED : DECLINED);
 
-        assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
-        assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
-        assertThat(candidates, Matchers.hasEntry(alex, Status.DECLINED));
+        assertThat(candidates, Matchers.hasEntry(ivan, ACCEPTED));
+        assertThat(candidates, Matchers.hasEntry(helen, ACCEPTED));
+        assertThat(candidates, Matchers.hasEntry(alex, DECLINED));
     }
 
     @Test
@@ -47,18 +48,19 @@ class Exercise1 {
         Person ivan = new Person("Иван", "Стрельцов", 24);
         Person helen = new Person("Елена", "Рощина", 22);
         Map<Person, Status> candidates = new HashMap<>();
-        candidates.put(alex, Status.PENDING);
-        candidates.put(ivan, Status.PENDING);
-        candidates.put(helen, Status.PENDING);
+        candidates.put(alex, PENDING);
+        candidates.put(ivan, PENDING);
+        candidates.put(helen, PENDING);
 
-        candidates.put(new Person("a", "a", 19), Status.PENDING);
-        candidates.put(new Person("b", "c", 16), Status.PENDING);
-        candidates.put(new Person("b", "c", 5), Status.PENDING);
+        candidates.put(new Person("a", "a", 19), PENDING);
+        candidates.put(new Person("b", "c", 16), PENDING);
+        candidates.put(new Person("b", "c", 5), PENDING);
 
-        // TODO implementation
+        candidates.entrySet().removeIf(entry -> entry.getKey().getAge() < 21);
+        candidates.replaceAll((key, value) -> ACCEPTED);
 
-        assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
-        assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
+        assertThat(candidates, Matchers.hasEntry(ivan, ACCEPTED));
+        assertThat(candidates, Matchers.hasEntry(helen, ACCEPTED));
         assertThat(candidates, not(hasKey(alex)));
     }
 
@@ -68,18 +70,16 @@ class Exercise1 {
         Person ivan = new Person("Иван", "Стрельцов", 24);
         Person helen = new Person("Елена", "Рощина", 22);
         Map<Person, Status> candidates = new HashMap<>();
-        candidates.put(alex, Status.PENDING);
-        candidates.put(ivan, Status.PENDING);
+        candidates.put(alex, PENDING);
+        candidates.put(ivan, PENDING);
 
-        // TODO implementation
+        Status alexStatus = candidates.getOrDefault(alex, UNKNOWN);
+        Status ivanStatus = candidates.getOrDefault(ivan, UNKNOWN);;
+        Status helenStatus = candidates.getOrDefault(helen, UNKNOWN);;
 
-        Status alexStatus = null;
-        Status ivanStatus = null;
-        Status helenStatus = null;
-
-        assertThat(alexStatus, is(Status.PENDING));
-        assertThat(ivanStatus, is(Status.PENDING));
-        assertThat(helenStatus, is(Status.UNKNOWN));
+        assertThat(alexStatus, is(PENDING));
+        assertThat(ivanStatus, is(PENDING));
+        assertThat(helenStatus, is(UNKNOWN));
     }
 
     @Test
@@ -89,18 +89,18 @@ class Exercise1 {
         Person helen = new Person("Елена", "Рощина", 22);
         Person dmitry = new Person("Дмитрий", "Егоров", 30);
         Map<Person, Status> oldValues = new HashMap<>();
-        oldValues.put(alex, Status.PENDING);
-        oldValues.put(dmitry, Status.DECLINED);
-        oldValues.put(ivan, Status.ACCEPTED);
+        oldValues.put(alex, PENDING);
+        oldValues.put(dmitry, DECLINED);
+        oldValues.put(ivan, ACCEPTED);
 
         Map<Person, Status> newValues = new HashMap<>();
-        newValues.put(alex, Status.DECLINED);
-        newValues.put(helen, Status.PENDING);
+        newValues.put(alex, DECLINED);
+        newValues.put(helen, PENDING);
 
-        // TODO implementation
+        oldValues.forEach(newValues::putIfAbsent);
 
-        assertThat(newValues, hasEntry(alex, Status.DECLINED));
-        assertThat(newValues, hasEntry(ivan, Status.ACCEPTED));
-        assertThat(newValues, hasEntry(helen, Status.PENDING));
+        assertThat(newValues, hasEntry(alex, DECLINED));
+        assertThat(newValues, hasEntry(ivan, ACCEPTED));
+        assertThat(newValues, hasEntry(helen, PENDING));
     }
 }
