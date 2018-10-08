@@ -38,7 +38,9 @@ class Exercise3 {
         Comparator<Person> personByFirstNameComparator = (p1, p2) -> p1.getFirstName().compareToIgnoreCase(p2.getFirstName());
         Comparator<Person> personByLastNameComparator = (p1, p2) -> p1.getLastName().compareToIgnoreCase(p2.getLastName());
 
-        Arrays.sort(persons, (p1, p2) -> personByLastNameComparator.thenComparing(personByFirstNameComparator).compare(p1, p2));
+        Arrays.sort(persons, (p1, p2) -> {
+            return personByLastNameComparator.thenComparing(personByFirstNameComparator).compare(p1, p2);
+        });
 
         assertThat(persons, is(arrayContaining(
                 new Person("Алексей", "Доренко", 40),
