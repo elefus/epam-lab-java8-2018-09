@@ -1,4 +1,4 @@
-package streams.example;
+package streams.part1.example;
 
 import lambda.data.Employee;
 import lambda.part3.example.Example1;

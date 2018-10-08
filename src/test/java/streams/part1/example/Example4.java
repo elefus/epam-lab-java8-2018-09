@@ -1,4 +1,4 @@
-package streams.example;
+package streams.part1.example;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +43,7 @@ class Example4 {
                                  .limit(5)
                                  .count();
 
-        assertThat(count, is(5));
+        assertThat(count, is(5L));
     }
 
     @Test
@@ -51,7 +51,7 @@ class Example4 {
         long resultLong = LongStream.range(0, 50)
                                     .sum();
 
-        assertThat(resultLong, is(1225));
+        assertThat(resultLong, is(1225L));
     }
 
     @Test
@@ -101,7 +101,7 @@ class Example4 {
         OptionalLong result = LongStream.of(-7, 1, 0, 6)
                                         .max();
 
-        assertThat(result.orElseThrow(IllegalStateException::new), is(6));
+        assertThat(result.orElseThrow(IllegalStateException::new), is(6L));
     }
 
     @Test
@@ -109,7 +109,7 @@ class Example4 {
         DoubleSummaryStatistics statistics = DoubleStream.of(0.5, 0.33, Math.PI, 60.3)
                                                          .summaryStatistics();
 
-        assertThat(statistics.getCount(), is(4));
+        assertThat(statistics.getCount(), is(4L));
         assertThat(60.3,  closeTo(statistics.getMax(), 0.001));
         assertThat(0.33, closeTo(statistics.getMin(), 0.001));
         assertThat(16.067, closeTo(statistics.getAverage(), 0.001));
@@ -122,7 +122,7 @@ class Example4 {
 
         Stream<Integer> result = original.boxed();
 
-        assertThat(result.count(), is(10));
+        assertThat(result.count(), is(10L));
     }
 
     @Test

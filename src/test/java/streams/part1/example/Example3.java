@@ -1,4 +1,4 @@
-package streams.example;
+package streams.part1.example;
 
 import org.junit.jupiter.api.Test;
 

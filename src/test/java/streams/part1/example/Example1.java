@@ -1,4 +1,4 @@
-package streams.example;
+package streams.part1.example;
 
 import lambda.data.Employee;
 import lambda.data.JobHistoryEntry;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Spliterator;
 import java.util.stream.Stream;
 
 /**
