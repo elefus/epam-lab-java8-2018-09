@@ -82,8 +82,7 @@ class Example4 {
         DoubleStream randomDoubles = ThreadLocalRandom.current()
                                                       .doubles(10, 0, 10);
 
-        OptionalDouble optionalResult = randomDoubles.average();
-        double result = optionalResult.orElseThrow(IllegalStateException::new);
+        double result = randomDoubles.sum();
 
         assertThat(result, both(greaterThanOrEqualTo(0d)).and(lessThanOrEqualTo(100d)));
     }

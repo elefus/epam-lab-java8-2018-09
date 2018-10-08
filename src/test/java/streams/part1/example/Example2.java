@@ -1,9 +1,12 @@
 package streams.part1.example;
 
 import lambda.data.Employee;
+import lambda.data.JobHistoryEntry;
+import lambda.data.Person;
 import lambda.part3.example.Example1;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +26,11 @@ class Example2 {
     void getIvansLastNames() {
         List<Employee> employees = Example1.getEmployees();
 
-        String[] ivansLastNames = null;
+        String[] ivansLastNames = employees.stream()
+                                           .map(Employee::getPerson)
+                                           .filter(person -> "Иван".equals(person.getFirstName()))
+                                           .map(Person::getLastName)
+                                           .toArray(String[]::new);
 
         assertThat(ivansLastNames, arrayContaining("Мельников", "Александров"));
     }
@@ -32,9 +39,39 @@ class Example2 {
     void checkAny25AgedIvanHasDevExperience() {
         List<Employee> employees = Example1.getEmployees();
 
+        boolean any25IvanHasDevExperience =
+                employees.stream()
+//                         .filter(employee -> {
+//                             Person person = employee.getPerson();
+//                             return "Иван".equals(person.getFirstName()) && person.getAge() > 25;
+//                         })
+//                         .filter(employee -> "Иван".equals(employee.getPerson().getFirstName()))
+//                         .filter(employee -> employee.getPerson().getAge() > 25)
+//                         .flatMap(employee -> employee.getJobHistory().stream())
+//                         .anyMatch(entry -> "dev".equals(entry.getPosition()));
 
-        boolean any25IvanHasDevExperience = false;
+                         .filter(employee -> "Иван".equals(employee.getPerson().getFirstName()))
+                         .filter(employee -> employee.getPerson().getAge() > 25)
+                         .map(Employee::getJobHistory)
+                         .flatMap(Collection::stream)
+                         .map(JobHistoryEntry::getPosition)
+//                         .filter("dev"::equals)
+//                         .findAny()
+//                         .isPresent();
+                         .anyMatch("dev"::equals);
+
+
+        boolean res = employees.stream()
+                               .filter(employee -> employee.getJobHistory()
+                                                           .stream()
+                                                           .map(JobHistoryEntry::getPosition)
+                                                           .anyMatch("dev"::equals))
+                               .map(Employee::getPerson)
+                               .filter(person -> "Иван".equals(person.getFirstName()))
+                               .anyMatch(person -> person.getAge() > 25);
+
 
         assertThat(any25IvanHasDevExperience, is(true));
+        assertThat(res, is(true));
     }
 }

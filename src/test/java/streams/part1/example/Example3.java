@@ -63,6 +63,23 @@ class Example3 {
     }
 
     @Test
+    void linesStreamFromReader() throws IOException {
+        File sourceFile = File.createTempFile("lines", "tmp");
+        sourceFile.deleteOnExit();
+        try (PrintWriter out = new PrintWriter(sourceFile)) {
+            out.println("a");
+            out.println("b");
+            out.println("c");
+        }
+
+        try (BufferedReader reader = Files.newBufferedReader(sourceFile.toPath())) {
+            Stream<String> stream = reader.lines();
+            String[] valuesInStream = stream.toArray(String[]::new);
+            assertThat(valuesInStream, arrayContaining("a", "b", "c"));
+        }
+    }
+
+    @Test
     void sequentialStreamFromCollection() {
         Collection<Integer> source = Arrays.asList(1, 2, 3);
 
@@ -171,19 +188,14 @@ class Example3 {
     }
 
     @Test
-    void linesStreamFromReader() throws IOException {
-        File sourceFile = File.createTempFile("lines", "tmp");
-        sourceFile.deleteOnExit();
-        try (PrintWriter out = new PrintWriter(sourceFile)) {
-            out.println("a");
-            out.println("b");
-            out.println("c");
-        }
+    void concat() {
+        Stream<Integer> left = Stream.of(1, 2, 3);
+        Stream<Integer> right = Stream.of(4, 5, 6);
 
-        try (BufferedReader reader = Files.newBufferedReader(sourceFile.toPath())) {
-            Stream<String> stream = reader.lines();
-            String[] valuesInStream = stream.toArray(String[]::new);
-            assertThat(valuesInStream, arrayContaining("a", "b", "c"));
-        }
+        Stream<Integer> result = Stream.concat(Stream.concat(left, right), Stream.of(7, 8, 9));
+
+        Integer[] integers = result.toArray(Integer[]::new);
+
+        assertThat(integers, arrayContaining(1, 2, 3, 4, 5, 6, 7, 8, 9));
     }
 }
