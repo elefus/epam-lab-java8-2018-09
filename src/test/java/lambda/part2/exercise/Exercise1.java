@@ -29,7 +29,7 @@ class Exercise1 {
         Person person3 = new Person("Илья", "Жирков", 22);
 
         //create variable sameAgesChecker: (Person, Person) -> boolean, using BiPredicate
-        BiPredicate<Person, Person> sameAgesChecker = (person1_1, person2_2) -> person1.getAge() == person2_2.getAge();
+        BiPredicate<Person, Person> sameAgesChecker = (person1_1, person2_2) -> person1_1.getAge() == person2_2.getAge();
 
         assertThat(sameAgesChecker.test(person1, person2), is(true));
         assertThat(sameAgesChecker.test(person1, person3), is(false));
