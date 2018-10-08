@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.is;
 
 class Example3 {
@@ -131,20 +132,23 @@ class Example3 {
     void emptyStream() {
         Stream<String> stream = Stream.empty();
 
-        assertThat(stream.count(), is(0));
+        assertThat(stream.count(), is(0L));
     }
 
     @Test
     void streamFilesFromPath() throws IOException, URISyntaxException {
         Path resourcesPath = Paths.get(ClassLoader.getSystemResource("").toURI());
 
-        Stream<Path> stream = Files.list(resourcesPath.resolve("top"));
-        Path[] valuesInStream = stream.toArray(Path[]::new);
+        String[] fileNames = Files.list(resourcesPath.resolve("streams"))
+                                  .map(Path::getFileName)
+                                  .map(Path::toString)
+                                  .toArray(String[]::new);
 
-        assertThat(valuesInStream[0].getFileName().toString(), is("file1.txt"));
-        assertThat(valuesInStream[1].getFileName().toString(), is("file2.txt"));
-        assertThat(valuesInStream[2].getFileName().toString(), is("file3.bmp"));
+        assertThat(fileNames, hasItemInArray("file1.txt"));
+        assertThat(fileNames, hasItemInArray("file2.txt"));
+        assertThat(fileNames, hasItemInArray("file3.bmp"));
     }
+
 
     @Test
     void streamFoundFilesFromPath() throws IOException, URISyntaxException {
