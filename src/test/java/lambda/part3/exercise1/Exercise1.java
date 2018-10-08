@@ -32,6 +32,7 @@ public class Exercise1 {
         //преобразование списка employees в lengths используя fullNameLengthExtractor
         employees.forEach(employee -> lengths.add(fullNameLengthExtractor.apply(employee)));
 
+
         assertEquals(Arrays.asList(14, 19, 14, 15, 14, 16), lengths);
     }
 
