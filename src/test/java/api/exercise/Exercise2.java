@@ -3,6 +3,7 @@ package api.exercise;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.function.BinaryOperator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,13 +46,18 @@ class Exercise2 {
     /**
      * Выполняет операцию сканирования в однопоточном режиме.
      * Не модифицирует исходный набор данных.
-     * @param source Массив исходных элементов.
+     *
+     * @param source   Массив исходных элементов.
      * @param operator Оператор сканирования.
      * @return Результат сканирования.
      * @see <a href="https://habr.com/company/epam_systems/blog/247805">Сканирование</a>
      */
     private static <T> T[] sequentialPrefix(T[] source, BinaryOperator<T> operator) {
-        throw new UnsupportedOperationException();
+        T[] result = Arrays.copyOf(source, source.length);
+        for (int i = 1; i < result.length; i++) {
+            result[i] = operator.apply(result[i - 1], result[i]);
+        }
+        return result;
     }
 
     @Test
@@ -75,12 +81,17 @@ class Exercise2 {
 
     /**
      * Вычисляет двоичный логарифм положительного числа.
+     *
      * @param value Аргумент.
      * @return Логарифм по основанию 2 от аргумента.
      * @throws IllegalArgumentException Если {@code value <= 0}
      */
     private static int log2(int value) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (value > 0) {
+            return Integer.numberOfTrailingZeros(Integer.highestOneBit(value));
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Test
@@ -105,12 +116,25 @@ class Exercise2 {
 
     /**
      * Возводит неотрицательное число в неотрицательную степень.
-     * @param base Основание степени.
+     *
+     * @param base   Основание степени.
      * @param degree Показатель степени.
      * @return Значение {@code base}<sup>{@code degree}</sup>
      * @throws IllegalArgumentException Если {@code base < 0} или {@code degree < 0}
      */
     private static int pow(int base, int degree) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (base >= 0 && degree >= 0) {
+            if (degree > 0) {
+                int result = 1;
+                for (int i = 0; i < degree; i++) {
+                    result *= base;
+                }
+                return result;
+            } else {
+                return 1;
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }
