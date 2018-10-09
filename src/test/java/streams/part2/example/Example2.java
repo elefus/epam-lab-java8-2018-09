@@ -93,7 +93,7 @@ class Example2 {
     @Test
     void toTreeMapKeyValueMergeCollector() {
         Map<Integer, String> result = Stream.of(1, 1, 2, 3, 4)
-                                            .collect(toMap(identity(), Object::toString, (oldValue, newValue) -> oldValue + newValue, TreeMap::new));
+                                            .collect(toMap(identity(), Object::toString, String::concat, TreeMap::new));
 
         assertThat(result, hasEntry(1, "11"));
         assertThat(result, hasEntry(2, "2"));

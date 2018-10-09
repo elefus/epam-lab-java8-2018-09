@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -38,7 +39,7 @@ class Example1 {
         }
         builder.setLength(builder.length() - 2);
 
-        assertThat(builder, Matchers.hasToString("Иван Мельников, Александр Дементьев, Дмитрий Осинов"));
+        assertThat(builder, hasToString("Иван Мельников, Александр Дементьев, Дмитрий Осинов"));
     }
 
     @Test
@@ -56,21 +57,27 @@ class Example1 {
 
     @Test
     void reducePersonsToStringUsingStringConcatenation() {
-        Stream<Employee> source = getEmployees().parallelStream();
+        String a = "123";
+        String b = "asdas";
+        String c = a + ", " + b;
 
-        String result = source.limit(3)
-                              .map(Employee::getPerson)
-                              .map(Person::getFullName)
-                              .reduce("", (left, right) -> left + ", " + right);
+        String result = getEmployees().parallelStream()
+                                      .limit(3)
+                                      .map(Employee::getPerson)
+                                      .map(Person::getFullName)
+                                      .reduce((s, s2) -> s + ", " + s2)
+                                      .orElseThrow(IllegalStateException::new);
+//                                      .reduce("", (left, right) -> left + ", " + right);
 
         assertThat(result, is("Иван Мельников, Александр Дементьев, Дмитрий Осинов"));
     }
 
     @Test
     void collectPersonsToStringUsingStringBuilder() {
-        Stream<Employee> source = getEmployees().stream();
+        Stream<Employee> source = getEmployees().parallelStream();
 
         StringBuilder result = source.limit(3)
+                                     .parallel()
                                      .map(Employee::getPerson)
                                      .map(Person::getFullName)
                                      .collect(StringBuilder::new,
@@ -101,7 +108,7 @@ class Example1 {
     @Test
     void mergeStringJoiners() {
         StringJoiner left = new StringJoiner("-", "[", "]");
-        StringJoiner right = new StringJoiner("-", "[", "]");
+        StringJoiner right = new StringJoiner("~", "[", "]");
 
         left.add("1").add("2");
         right.add("3").add("4");
@@ -126,16 +133,39 @@ class Example1 {
         assertThat(result, is("0, 1, 2, 3, 4"));
     }
 
-    private static abstract class IntCommaStringJoiner implements Collector<Integer, StringJoiner, String> {
+    private static class IntCommaStringJoiner implements Collector<Integer, StringJoiner, String> {
+        @Override
+        public Supplier<StringJoiner> supplier() {
+            return () -> new StringJoiner(", ");
+        }
+
+        @Override
+        public BiConsumer<StringJoiner, Integer> accumulator() {
+            return (accumulator, value) -> accumulator.add(Integer.toString(value));
+        }
+
+        @Override
+        public BinaryOperator<StringJoiner> combiner() {
+            return StringJoiner::merge;
+        }
+
+        @Override
+        public Function<StringJoiner, String> finisher() {
+            return StringJoiner::toString;
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.emptySet();
+        }
     }
 
     @Test
     void collectPersonToStringUsingCustomStringJoiner() {
-//        String result = IntStream.range(0, 1000)
-//                                 .boxed()
-//                                 .collect(new IntCommaStringJoiner());
-
-        String result = null;
+        String result = IntStream.range(0, 5)
+                                 .parallel()
+                                 .boxed()
+                                 .collect(new IntCommaStringJoiner());
 
         assertThat(result, is("0, 1, 2, 3, 4"));
     }

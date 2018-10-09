@@ -51,6 +51,17 @@ class Example1 {
 //                                   .parallel()
 //                                   .reduce(0, Integer::sum));
 
+
+        // 1 2 3   4 5 6
+        // 1 2 3 | 4 5 6
+
+        // []
+        // [1]      [4]
+        //   [1, 2]    [4, 5]
+        //   [1, 2, 3] [4, 5, 6]
+        //      [1, 2, 3, 4, 5, 6]
+
+
         System.out.println(integers.stream()
                                    .parallel()
                                    .reduce(new ArrayList<Integer>(),
@@ -68,6 +79,22 @@ class Example1 {
 ////                                               System.out.println("combine");
 ////                                               return leftAccum + rightAccum;
 //                                           }=
+
+        // parallel-reduce
+        // 1 2 3               | 4 5 6
+        // [1, 2, 3, 4, 5, 6]      [4, 5, 6]
+        ArrayList<Integer> values = integers.stream()
+                                             .parallel()
+                                             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        // concurrent-reduce
+        // [1, 4, 5, 2, 3, 6]
+        // 1 2 3               | 4 5 6
+        ArrayList<Integer> values1 = integers.stream()
+                                            .parallel()
+                                            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        System.out.println(values);
 
 
     }
