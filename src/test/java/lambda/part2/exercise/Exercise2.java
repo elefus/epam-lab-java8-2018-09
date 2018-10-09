@@ -40,8 +40,8 @@ class Exercise2 {
         Predicate<Person> personHasEmptyFirstName = person -> person.getFirstName().isEmpty() || person.getFirstName() == null;
         Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getFirstName() == null;
 
-        Predicate<Person> personHasNotEmptyFirstName = negate(personHasEmptyFirstName);
-        Predicate<Person> personHasNotEmptyLastName = negate(personHasEmptyLastName);
+        Predicate<Person> personHasNotEmptyFirstName = negateUsingLogicalOperator(personHasEmptyFirstName);
+        Predicate<Person> personHasNotEmptyLastName = negateUsingLogicalOperator(personHasEmptyLastName);
 
         Predicate<Person> personHasNotEmptyLastNameAndFirstName =
                 andUsingLogicalOperator(personHasNotEmptyFirstName, personHasNotEmptyLastName);
@@ -69,7 +69,7 @@ class Exercise2 {
     @Test
     void personHasNotEmptyLastNameAndFirstNameUsingGenericPredicates() {
         Predicate<Person> personHasEmptyFirstName = person -> person.getFirstName().isEmpty() || person.getFirstName() == null;
-        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getFirstName() == null;
+        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getLastName() == null;
 
         Predicate<Person> personHasNotEmptyFirstName = negate(personHasEmptyFirstName);
         Predicate<Person> personHasNotEmptyLastName = negate(personHasEmptyLastName);
@@ -84,7 +84,7 @@ class Exercise2 {
     @Test
     void personHasNotEmptyLastNameAndFirstNameUsingStandardMethods() {
         Predicate<Person> personHasEmptyFirstName = person -> person.getFirstName().isEmpty() || person.getFirstName() == null;
-        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getFirstName() == null;
+        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getLastName() == null;
 
         //использовать Predicate.negate
         Predicate<Person> personHasNotEmptyFirstName = personHasEmptyFirstName.negate();
