@@ -18,21 +18,33 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class Exercise4 {
 
     private static class LazyCollectionHelper<T, R> {
+        private List<T> source;
+        private Function<T, R> func;
 
-        public static <T> LazyCollectionHelper<T, T> from(List<T> list) {
-            throw new UnsupportedOperationException();
+        public LazyCollectionHelper(List<T> source, Function<T, R> func) {
+            this.source = source;
+            this.func = func;
         }
 
+        public static <T> LazyCollectionHelper<T, T> from(List<T> list) {
+            return new LazyCollectionHelper<>(list, e -> e);
+        }
+
+        // T -> R -> List<U> -> U
+
         public <U> LazyCollectionHelper<T, U> flatMap(Function<R, List<U>> flatMapping) {
-            throw new UnsupportedOperationException();
+
+            return new LazyCollectionHelper<>(source, );
         }
 
         public <U> LazyCollectionHelper<T, U> map(Function<R, U> mapping) {
-            throw new UnsupportedOperationException();
+            return new LazyCollectionHelper<>(source, func.andThen(mapping));
         }
 
         public List<R> force() {
-            throw new UnsupportedOperationException();
+            List<R> result = new ArrayList<>();
+            source.forEach(e -> result.add(func.apply(e)));
+            return result;
         }
     }
 
@@ -50,7 +62,7 @@ class Exercise4 {
         assertThat(codes, Matchers.contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
 
-    private static List<Integer> calcCodes(String...strings) {
+    private static List<Integer> calcCodes(String... strings) {
         List<Integer> codes = new ArrayList<>();
         for (String string : strings) {
             for (char letter : string.toCharArray()) {
