@@ -126,39 +126,16 @@ class Example1 {
         assertThat(result, is("0, 1, 2, 3, 4"));
     }
 
-    private static class IntCommaStringJoiner implements Collector<Integer, StringJoiner, String> {
-
-        @Override
-        public Supplier<StringJoiner> supplier() {
-            return () -> new StringJoiner(", ");
-        }
-
-        @Override
-        public BiConsumer<StringJoiner, Integer> accumulator() {
-            return (joiner, value) -> joiner.add(String.valueOf(value));
-        }
-
-        @Override
-        public BinaryOperator<StringJoiner> combiner() {
-            return StringJoiner::merge;
-        }
-
-        @Override
-        public Function<StringJoiner, String> finisher() {
-            return StringJoiner::toString;
-        }
-
-        @Override
-        public Set<Characteristics> characteristics() {
-            return Collections.emptySet();
-        }
+    private static abstract class IntCommaStringJoiner implements Collector<Integer, StringJoiner, String> {
     }
 
     @Test
     void collectPersonToStringUsingCustomStringJoiner() {
-        String result = IntStream.range(0, 1000)
-                                 .boxed()
-                                 .collect(new IntCommaStringJoiner());
+//        String result = IntStream.range(0, 1000)
+//                                 .boxed()
+//                                 .collect(new IntCommaStringJoiner());
+
+        String result = null;
 
         assertThat(result, is("0, 1, 2, 3, 4"));
     }
