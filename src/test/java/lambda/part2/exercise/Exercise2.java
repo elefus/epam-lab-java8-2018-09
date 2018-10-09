@@ -38,7 +38,7 @@ class Exercise2 {
     @Test
     void personHasNotEmptyLastNameAndFirstNameUsingLogicalOperators() {
         Predicate<Person> personHasEmptyFirstName = person -> person.getFirstName().isEmpty() || person.getFirstName() == null;
-        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getFirstName() == null;
+        Predicate<Person> personHasEmptyLastName = person -> person.getLastName().isEmpty() || person.getLastName() == null;
 
         Predicate<Person> personHasNotEmptyFirstName = negateUsingLogicalOperator(personHasEmptyFirstName);
         Predicate<Person> personHasNotEmptyLastName = negateUsingLogicalOperator(personHasEmptyLastName);
