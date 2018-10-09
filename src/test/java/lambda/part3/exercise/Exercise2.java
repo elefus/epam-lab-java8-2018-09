@@ -79,7 +79,7 @@ class Exercise2 {
                                         .flatMap(Employee::getJobHistory)
                                         .map(JobHistoryEntry::getPosition)
                                         .flatMap(Exercise2::calcCodes)
-                                        .map(Integer::valueOf)
+                                        .map(i -> i)
                                         .getMapped();
         assertThat(codes, contains(calcCodes("dev", "dev", "tester", "dev", "dev", "QA", "QA", "dev", "tester", "tester", "QA", "QA", "QA", "dev").toArray()));
     }
