@@ -5,9 +5,7 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,20 +15,26 @@ import static org.hamcrest.Matchers.contains;
 class Exercise3 {
 
     private static class LazyMapHelper<T, R> {
+        private List<T> source;
+        private Function<T, R> func;
+
+        private LazyMapHelper(List<T> source, Function<T, R> func) {
+            this.source = source;
+            this.func = func;
+        }
 
         public static <T> LazyMapHelper<T, T> from(List<T> list) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(list, e -> e);
         }
 
         public List<R> force() {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            List<R> result = new ArrayList<>();
+            source.forEach(e -> result.add(func.apply(e)));
+            return result;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(source, func.andThen(mapping));
         }
     }
 
@@ -38,7 +42,11 @@ class Exercise3 {
     void mapEmployeesToLengthOfTheirFullNamesUsingLazyMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> lengths = null;
+        List<Integer> lengths = LazyMapHelper.from(employees)
+                .map(Employee::getPerson)
+                .map(Person::getFullName)
+                .map(String::length)
+                .force();
         // TODO                 LazyMapHelper.from(employees)
         // TODO                              .map(Employee -> Person)
         // TODO                              .map(Person -> String(full name))
