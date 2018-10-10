@@ -1,6 +1,5 @@
 package lambda.data;
 
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
