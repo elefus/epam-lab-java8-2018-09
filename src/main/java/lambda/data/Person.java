@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Person implements Serializable {
+
     private final String firstName;
     private final String lastName;
     private final int age;
@@ -15,7 +16,7 @@ public class Person implements Serializable {
         this.lastName = lastName;
         this.age = age;
     }
-
+  
     public Person() {
         firstName = "default";
         lastName = "default";
@@ -44,8 +45,8 @@ public class Person implements Serializable {
         if (other == null || getClass() != other.getClass()) return false;
         Person person = (Person) other;
         return age == person.age
-                && Objects.equals(firstName, person.firstName)
-                && Objects.equals(lastName, person.lastName);
+            && Objects.equals(firstName, person.firstName)
+            && Objects.equals(lastName, person.lastName);
     }
 
     @Override
@@ -56,8 +57,8 @@ public class Person implements Serializable {
     @Override
     public String toString() {
         return "Person@" + hashCode() + ": {"
-                + "firstName='" + firstName + "', "
-                + "lastName='" + lastName + "', "
-                + "age=" + age + "}";
+             + "firstName='" + firstName + "', "
+             + "lastName='" + lastName + "', "
+             + "age=" + age + "}";
     }
 }
