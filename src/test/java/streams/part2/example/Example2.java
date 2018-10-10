@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.minBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summarizingInt;
 import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -39,6 +40,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -249,10 +251,10 @@ class Example2 {
         Map<Boolean, List<Person>> moreThan40Years = Example1.getEmployees()
                                                              .stream()
                                                              .map(Employee::getPerson)
-                                                             .collect(groupingBy(person -> person.getAge() > 40));
+                                                             .collect(groupingBy(person -> person.getAge() < 60));
 
         assertThat(moreThan40Years.get(true).size(), is(6));
-        assertThat(moreThan40Years.get(false), empty());
+        assertThat(moreThan40Years.get(false), nullValue());
     }
 
     @Test
@@ -260,7 +262,7 @@ class Example2 {
         Map<Boolean, List<Person>> moreThan40Years = Example1.getEmployees()
                                                              .stream()
                                                              .map(Employee::getPerson)
-                                                             .collect(partitioningBy(person -> person.getAge() > 40));
+                                                             .collect(partitioningBy(person -> person.getAge() < 60));
 
         assertThat(moreThan40Years.get(true).size(), is(6));
         assertThat(moreThan40Years.get(false), empty());
@@ -272,6 +274,12 @@ class Example2 {
                                                          .stream()
                                                          .map(Employee::getPerson)
                                                          .collect(groupingBy(Person::getFirstName, toSet()));
+
+
+        Map<String, Long> nameToNumbersPersons = Example1.getEmployees()
+                                                         .stream()
+                                                         .map(Employee::getPerson)
+                                                         .collect(groupingBy(Person::getFirstName, counting()));
 
         assertThat(nameToPersons.get("Иван").size(), is(2));
         assertThat(nameToPersons, not(hasKey("Алексей")));
