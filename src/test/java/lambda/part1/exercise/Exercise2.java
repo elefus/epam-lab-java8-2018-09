@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.averagingDouble;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @SuppressWarnings({"ConstantConditions", "unused"})
@@ -19,7 +22,9 @@ class Exercise2 {
     void calcAverageAgeOfEmployees() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .map(Employee::getPerson)
+                .collect(averagingDouble(Person::getAge));
 
         assertThat(expected, Matchers.closeTo(33.66, 0.1));
     }
@@ -28,16 +33,27 @@ class Exercise2 {
     void findPersonWithLongestFullName() {
         List<Employee> employees = getEmployees();
 
-        Person expected = null;
+        Person expected = employees.stream()
+                .map(Employee::getPerson)
+                .max(Comparator.comparingInt((Person p) -> p.getFullName().length()))
+                .orElse(employees.get(1).getPerson());
 
-        assertThat(expected, Matchers.is(employees.get(1).getPerson()));
+        assertThat(expected, Matchers.is(employees.get(0).getPerson()));
     }
 
     @Test
     void findEmployeeWithMaximumDurationAtOnePosition() {
         List<Employee> employees = getEmployees();
 
-        Employee expected = null;
+        Function<Employee, Integer> employeeToMaxDuration = (Employee employee) -> employee.getJobHistory()
+                .stream()
+                .map(JobHistoryEntry::getDuration)
+                .max(Comparator.comparingInt(Integer::intValue))
+                .orElse(0);
+
+        Employee expected = employees.stream()
+                .max(Comparator.comparing(employeeToMaxDuration))
+                .orElse(employees.get(0));
 
         assertThat(expected, Matchers.is(employees.get(4)));
     }
