@@ -19,31 +19,42 @@ class Exercise4 {
 
     private static class LazyCollectionHelper<T, R> {
         private List<T> source;
-        private Function<T, R> func;
+        private Function<T, List<R>> func;
 
-        public LazyCollectionHelper(List<T> source, Function<T, R> func) {
+        public LazyCollectionHelper(List<T> source, Function<T, List<R>> func) {
             this.source = source;
             this.func = func;
         }
 
         public static <T> LazyCollectionHelper<T, T> from(List<T> list) {
-            return new LazyCollectionHelper<>(list, e -> e);
+            return new LazyCollectionHelper<>(list, Arrays::asList);
         }
 
         // T -> R -> List<U> -> U
 
         public <U> LazyCollectionHelper<T, U> flatMap(Function<R, List<U>> flatMapping) {
 
-            return new LazyCollectionHelper<>(source, );
+            Function<T, List<U>> f = (T t) -> {
+                List<U> res = new ArrayList<>();
+                func.apply(t).forEach(r -> res.addAll(flatMapping.apply(r)));
+                return res;
+            };
+
+            return new LazyCollectionHelper<>(source, f);
         }
 
         public <U> LazyCollectionHelper<T, U> map(Function<R, U> mapping) {
-            return new LazyCollectionHelper<>(source, func.andThen(mapping));
+            Function<T, List<U>> f = (T t) -> {
+                List<U> res = new ArrayList<>();
+                func.apply(t).forEach(r -> res.add(mapping.apply(r)));
+                return res;
+            };
+            return new LazyCollectionHelper<>(source, f);
         }
 
         public List<R> force() {
             List<R> result = new ArrayList<>();
-            source.forEach(e -> result.add(func.apply(e)));
+            source.forEach(e -> result.addAll(func.apply(e)));
             return result;
         }
     }
@@ -52,7 +63,18 @@ class Exercise4 {
     void mapEmployeesToCodesOfLetterTheirPositionsUsingLazyFlatMapHelper() {
         List<Employee> employees = getEmployees();
 
-        List<Integer> codes = null;
+        List<Integer> codes = LazyCollectionHelper.from(employees)
+                .flatMap(Employee::getJobHistory)
+                .map(JobHistoryEntry::getPosition)
+                .flatMap(s -> {
+                    List<Character> list = new ArrayList<>();
+                    for (char c : s.toCharArray()) {
+                        list.add(c);
+                    }
+                    return list;
+                })
+                .map(Integer::valueOf)
+                .force();
         // TODO              LazyCollectionHelper.from(employees)
         // TODO                                  .flatMap(Employee -> JobHistoryEntry)
         // TODO                                  .map(JobHistoryEntry -> String(position))
