@@ -36,9 +36,9 @@ class Exercise2 {
         Person expected = employees.stream()
                 .map(Employee::getPerson)
                 .max(Comparator.comparingInt((Person p) -> p.getFullName().length()))
-                .orElse(employees.get(1).getPerson());
+                .orElse(employees.get(0).getPerson());
 
-        assertThat(expected, Matchers.is(employees.get(0).getPerson()));
+        assertThat(expected, Matchers.is(employees.get(1).getPerson()));
     }
 
     @Test
@@ -67,9 +67,15 @@ class Exercise2 {
     void calcTotalSalaryWithCoefficientWorkExperience() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .map(Employee::getJobHistory)
+                .map(jobs -> jobs.get(jobs.size() - 1))
+                .map(JobHistoryEntry::getDuration)
+                .map(duration -> duration > 3 ? 75000d : 75000 * 1.2)
+                .mapToDouble(Double::new)
+                .sum();
 
-        assertThat(expected, Matchers.closeTo(465000.0, 0.001));
+        assertThat(expected, Matchers.closeTo(525000.0, 0.001));
     }
 
     private static List<Employee> getEmployees() {
