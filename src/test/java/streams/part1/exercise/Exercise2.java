@@ -1,4 +1,4 @@
-package lambda.part1.exercise;
+package streams.part1.exercise;
 
 import lambda.data.Employee;
 import lambda.data.JobHistoryEntry;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,7 +20,9 @@ class Exercise2 {
     void calcAverageAgeOfEmployees() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .mapToDouble(employee -> employee.getPerson().getAge())
+                .average().orElse(-1);
 
         assertThat(expected, Matchers.closeTo(33.66, 0.1));
     }
@@ -28,7 +31,10 @@ class Exercise2 {
     void findPersonWithLongestFullName() {
         List<Employee> employees = getEmployees();
 
-        Person expected = null;
+        Person expected = employees.stream()
+                .map(Employee::getPerson)
+                .max(Comparator.comparingInt(p -> p.getFullName().length()))
+                .orElse(new Person());
 
         assertThat(expected, Matchers.is(employees.get(1).getPerson()));
     }
@@ -37,7 +43,10 @@ class Exercise2 {
     void findEmployeeWithMaximumDurationAtOnePosition() {
         List<Employee> employees = getEmployees();
 
-        Employee expected = null;
+        Employee expected = employees.stream()
+                .max(Comparator.comparingInt(employee -> employee.getJobHistory().stream()
+                    .map(JobHistoryEntry::getDuration)
+                    .max(Integer::compareTo).orElse(-1))).orElseThrow(UnsupportedOperationException::new);
 
         assertThat(expected, Matchers.is(employees.get(4)));
     }
@@ -51,7 +60,13 @@ class Exercise2 {
     void calcTotalSalaryWithCoefficientWorkExperience() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .map(Employee::getJobHistory)
+                .map(positions -> positions.get(positions.size() - 1))
+                .map(JobHistoryEntry::getDuration)
+                .map(d -> d > 3 ? 75000d * 1.2 : 75000)
+                .mapToDouble(Double::new)
+                .sum();
 
         assertThat(expected, Matchers.closeTo(465000.0, 0.001));
     }
