@@ -1,4 +1,4 @@
-package lambda.part1.exercise;
+package streams.part1.exercise;
 
 import lambda.data.Employee;
 import lambda.data.JobHistoryEntry;
