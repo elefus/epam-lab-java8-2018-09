@@ -27,7 +27,7 @@ class Exercise1 {
         // TODO реализация
         Long hours = null;
 
-        assertThat(hours, is(19));
+        assertThat(hours, is(19L));
     }
 
     @Test
@@ -83,7 +83,7 @@ class Exercise1 {
 
         assertThat(result, hasEntry(is("dev"), contains(employees.get(0).getPerson())));
         assertThat(result, hasEntry(is("QA"), containsInAnyOrder(employees.get(2).getPerson(), employees.get(5).getPerson())));
-        assertThat(result, hasEntry(is("test"), containsInAnyOrder(employees.get(1).getPerson(), employees.get(3).getPerson(), employees.get(4).getPerson())));
+        assertThat(result, hasEntry(is("tester"), containsInAnyOrder(employees.get(1).getPerson(), employees.get(3).getPerson(), employees.get(4).getPerson())));
     }
 
     private static List<Employee> getEmployees() {
