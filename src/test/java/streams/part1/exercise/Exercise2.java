@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,7 +20,10 @@ class Exercise2 {
     void calcAverageAgeOfEmployees() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .mapToDouble(e -> e.getPerson().getAge())
+                .average()
+                .orElse(0);
 
         assertThat(expected, Matchers.closeTo(33.66, 0.1));
     }
@@ -28,7 +32,10 @@ class Exercise2 {
     void findPersonWithLongestFullName() {
         List<Employee> employees = getEmployees();
 
-        Person expected = null;
+        Person expected = employees.stream()
+                .map(Employee::getPerson)
+                .max(Comparator.comparingInt(p -> p.getFullName().length()))
+                .orElse(new Person());
 
         assertThat(expected, Matchers.is(employees.get(1).getPerson()));
     }
@@ -37,7 +44,13 @@ class Exercise2 {
     void findEmployeeWithMaximumDurationAtOnePosition() {
         List<Employee> employees = getEmployees();
 
-        Employee expected = null;
+        Employee expected = employees.stream()
+                .max(Comparator.comparingInt(e -> e.getJobHistory().stream()
+                        .map(JobHistoryEntry::getDuration)
+                        .max(Integer::compareTo)
+                        .orElse(0)))
+                .orElse(null);
+
 
         assertThat(expected, Matchers.is(employees.get(4)));
     }
@@ -51,7 +64,14 @@ class Exercise2 {
     void calcTotalSalaryWithCoefficientWorkExperience() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        double base = 75000;
+        Double expected = employees.stream()
+                .map(Employee::getJobHistory)
+                .map(j -> j.get(j.size() - 1))
+                .map(JobHistoryEntry::getDuration)
+                .map(d -> d > 3 ? base*1.2d : base)
+                .mapToDouble(Double::new)
+                .sum();
 
         assertThat(expected, Matchers.closeTo(465000.0, 0.001));
     }
