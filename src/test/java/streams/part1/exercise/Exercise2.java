@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,7 +20,11 @@ class Exercise2 {
     void calcAverageAgeOfEmployees() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double expected = employees.stream()
+                .map(Employee::getPerson)
+                .mapToDouble(Person::getAge)
+                .average()
+                .orElse(0);
 
         assertThat(expected, Matchers.closeTo(33.66, 0.1));
     }
@@ -28,7 +33,10 @@ class Exercise2 {
     void findPersonWithLongestFullName() {
         List<Employee> employees = getEmployees();
 
-        Person expected = null;
+        Person expected = employees.stream()
+                .map(Employee::getPerson)
+                .max(Comparator.comparing(person -> person.getFullName().length()))
+                .orElse(new Person());
 
         assertThat(expected, Matchers.is(employees.get(1).getPerson()));
     }
@@ -37,7 +45,12 @@ class Exercise2 {
     void findEmployeeWithMaximumDurationAtOnePosition() {
         List<Employee> employees = getEmployees();
 
-        Employee expected = null;
+        Employee expected = employees.stream()
+                .max(Comparator.comparing(employee -> employee.getJobHistory().stream()
+                                .map(JobHistoryEntry::getDuration)
+                                .max(Integer::compareTo)
+                                .orElse(0)))
+                .orElse(null);
 
         assertThat(expected, Matchers.is(employees.get(4)));
     }
@@ -51,7 +64,13 @@ class Exercise2 {
     void calcTotalSalaryWithCoefficientWorkExperience() {
         List<Employee> employees = getEmployees();
 
-        Double expected = null;
+        Double baseRate = 75000d;
+        Double expected =  employees.stream()
+                .map(Employee::getJobHistory)
+                .map(jobHistoryEntries -> jobHistoryEntries.get(jobHistoryEntries.size() - 1))
+                .map(JobHistoryEntry::getDuration)
+                .mapToDouble(duration -> duration > 3 ? baseRate * 1.2 : baseRate)
+                .sum();
 
         assertThat(expected, Matchers.closeTo(465000.0, 0.001));
     }
