@@ -4,8 +4,7 @@ import lambda.data.Person;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
@@ -34,7 +33,7 @@ class Exercise1 {
         candidates.put(ivan, Status.PENDING);
         candidates.put(helen, Status.PENDING);
 
-        // TODO implementation
+        candidates.replaceAll(((person, status) -> person.getAge() > 21 ? Status.ACCEPTED : Status.DECLINED));
 
         assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
         assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
@@ -55,7 +54,8 @@ class Exercise1 {
         candidates.put(new Person("b", "c", 16), Status.PENDING);
         candidates.put(new Person("b", "c", 5), Status.PENDING);
 
-        // TODO implementation
+        candidates.keySet().removeIf((person) -> person.getAge() < 21);
+        candidates.replaceAll((person, status) -> Status.ACCEPTED);
 
         assertThat(candidates, Matchers.hasEntry(ivan, Status.ACCEPTED));
         assertThat(candidates, Matchers.hasEntry(helen, Status.ACCEPTED));
@@ -71,11 +71,9 @@ class Exercise1 {
         candidates.put(alex, Status.PENDING);
         candidates.put(ivan, Status.PENDING);
 
-        // TODO implementation
-
-        Status alexStatus = null;
-        Status ivanStatus = null;
-        Status helenStatus = null;
+        Status alexStatus = candidates.getOrDefault(alex, Status.UNKNOWN);
+        Status ivanStatus = candidates.getOrDefault(ivan, Status.UNKNOWN);
+        Status helenStatus = candidates.getOrDefault(helen, Status.UNKNOWN);
 
         assertThat(alexStatus, is(Status.PENDING));
         assertThat(ivanStatus, is(Status.PENDING));
@@ -97,7 +95,7 @@ class Exercise1 {
         newValues.put(alex, Status.DECLINED);
         newValues.put(helen, Status.PENDING);
 
-        // TODO implementation
+        oldValues.forEach((person, status) -> newValues.putIfAbsent(person, status));
 
         assertThat(newValues, hasEntry(alex, Status.DECLINED));
         assertThat(newValues, hasEntry(ivan, Status.ACCEPTED));
