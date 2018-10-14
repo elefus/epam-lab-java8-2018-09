@@ -3,6 +3,7 @@ package api.exercise;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.function.BinaryOperator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,7 +52,14 @@ class Exercise2 {
      * @see <a href="https://habr.com/company/epam_systems/blog/247805">Сканирование</a>
      */
     private static <T> T[] sequentialPrefix(T[] source, BinaryOperator<T> operator) {
-        throw new UnsupportedOperationException();
+        T[] result = Arrays.copyOf(source, source.length);
+        for (int i = 0; i < log2(result.length) + 1; i++) {
+            int dist = pow(2, i);
+            for (int j = result.length - 1; j > dist - 1; j--) {
+                result[j] = operator.apply(result[j], result[j - dist]);
+            }
+        }
+        return result;
     }
 
     @Test
@@ -80,7 +88,10 @@ class Exercise2 {
      * @throws IllegalArgumentException Если {@code value <= 0}
      */
     private static int log2(int value) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (value<=0) {
+            throw new IllegalArgumentException();
+        }
+        return (int)(Math.log(value)/Math.log(2));
     }
 
     @Test
@@ -111,6 +122,9 @@ class Exercise2 {
      * @throws IllegalArgumentException Если {@code base < 0} или {@code degree < 0}
      */
     private static int pow(int base, int degree) throws IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if(base< 0 ||  degree< 0) {
+            throw new IllegalArgumentException();
+        }
+        return (int)Math.pow(base, degree);
     }
 }
