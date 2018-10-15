@@ -1,12 +1,10 @@
 package lambda.data;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Person implements Serializable {
-
     private final String firstName;
     private final String lastName;
     private final int age;
