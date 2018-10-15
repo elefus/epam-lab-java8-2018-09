@@ -34,7 +34,7 @@ class Exercise2 {
         Person expected = employees.stream()
                 .map(Employee::getPerson)
                 .max(Comparator.comparingInt(p -> p.getFullName().length()))
-                .orElse(new Person());
+                .orElseThrow(UnsupportedOperationException::new);
 
         assertThat(expected, Matchers.is(employees.get(1).getPerson()));
     }
