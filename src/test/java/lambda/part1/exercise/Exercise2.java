@@ -71,11 +71,11 @@ class Exercise2 {
                 .map(Employee::getJobHistory)
                 .map(jobs -> jobs.get(jobs.size() - 1))
                 .map(JobHistoryEntry::getDuration)
-                .map(duration -> duration > 3 ? 75000d : 75000 * 1.2)
+                .map(duration -> duration > 3 ? 75000 * 1.2 : 75000d)
                 .mapToDouble(Double::new)
                 .sum();
 
-        assertThat(expected, Matchers.closeTo(525000.0, 0.001));
+        assertThat(expected, Matchers.closeTo(465000.0, 0.001));
     }
 
     private static List<Employee> getEmployees() {
