@@ -22,17 +22,3 @@ public interface AdvancedStream<T> extends Stream<T> {
     // a.zipWithIndex() = [{0, A}, {1, B}, {2, C}...]
     AdvancedStream<IndexedValue<T>> zipWithIndex();
 }
-
-
-class DObject {
-
-    private DValue value;
-
-    void validator() {
-        Collection<String> validate = value.validate();
-    }
-}
-
-abstract class DValue<A> {
-    abstract Collection<String> validate();
-}
