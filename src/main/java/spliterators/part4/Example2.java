@@ -5,11 +5,12 @@ import java.util.stream.Stream;
 public class Example2 {
 
     public static void main(String[] args) {
-        Stream<String> source = Stream.of("a", "b", "c");
+        Stream<String> sourceStream = Stream.of("a", "b", "c", "123", "1");
 
+        AdvancedStream<String> advancedStream = AdvancedStream.of(sourceStream);
 
-        AdvancedStream<String> advancedStream = new AdvancedStreamImpl<>(source);
+        advancedStream.dropWhile(s -> s.length() < 2)
+                      .forEachOrdered(System.out::println);
 
-        advancedStream.forEachOrdered(System.out::println);
     }
 }

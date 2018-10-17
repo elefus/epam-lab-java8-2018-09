@@ -25,6 +25,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 public class AdvancedStreamImpl<T> implements AdvancedStream<T> {
@@ -33,7 +34,9 @@ public class AdvancedStreamImpl<T> implements AdvancedStream<T> {
 
     @Override
     public AdvancedStream<T> dropWhile(Predicate<T> condition) {
-        return null;
+        DropWhileSpliterator<T> dropWhileSpliterator = new DropWhileSpliterator<>(source.spliterator(), condition);
+        Stream<T> stream = StreamSupport.stream(dropWhileSpliterator, source.isParallel());
+        return new AdvancedStreamImpl<>(stream);
     }
 
     @Override

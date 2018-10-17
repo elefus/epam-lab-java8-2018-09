@@ -2,7 +2,6 @@ package spliterators.part4;
 
 import spliterators.part3.IndexedValue;
 
-import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -21,4 +20,8 @@ public interface AdvancedStream<T> extends Stream<T> {
 
     // a.zipWithIndex() = [{0, A}, {1, B}, {2, C}...]
     AdvancedStream<IndexedValue<T>> zipWithIndex();
+
+    static <T> AdvancedStream<T> of(Stream<T> source) {
+        return new AdvancedStreamImpl<>(source);
+    }
 }

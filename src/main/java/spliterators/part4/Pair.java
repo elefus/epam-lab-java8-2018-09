@@ -1,10 +1,10 @@
 package spliterators.part4;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class Pair<T, R> {
 
-    T value1;
-    R value2;
+    private final T value1;
+    private final R value2;
 }

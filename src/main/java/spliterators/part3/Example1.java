@@ -27,7 +27,6 @@ public class Example1 {
         StreamSupport.stream(new IndexedArraySpliterator<>(data), false)
                      .filter(indexedValue -> indexedValue.getIndex() > 1)
                      .filter(indexedValue -> indexedValue.getIndex() % 2 == 0)
-                     .map(IndexedValue::getValue)
                      .forEachOrdered(System.out::println);
 
     }

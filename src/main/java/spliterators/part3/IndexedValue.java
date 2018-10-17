@@ -1,10 +1,22 @@
 package spliterators.part3;
 
-import lombok.Value;
+import lombok.Data;
+import spliterators.part4.Pair;
 
-@Value
-public class IndexedValue<T> {
+@Data
+@SuppressWarnings("WeakerAccess")
+public class IndexedValue<T> extends Pair<Long, T> {
 
-    int index;
-    T value;
+    public IndexedValue(Long value1, T value2) {
+        super(value1, value2);
+    }
+
+    public long getIndex() {
+        return getValue1();
+    }
+
+    @Override
+    public String toString() {
+        return "[" + getIndex() + "] = " + getValue2();
+    }
 }

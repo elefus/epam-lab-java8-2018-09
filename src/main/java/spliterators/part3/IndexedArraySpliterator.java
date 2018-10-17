@@ -21,7 +21,7 @@ public class IndexedArraySpliterator<T> extends Spliterators.AbstractSpliterator
         if (index.get() == source.length) {
             return false;
         }
-        action.accept(new IndexedValue<>(index.get(), source[index.getAndIncrement()]));
+//        action.accept(new IndexedValue<>(index.get(), source[index.getAndIncrement()]));
         return index.get() != source.length;
     }
 
