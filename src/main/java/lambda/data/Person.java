@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Person implements Serializable {
 
-    private final String firstName;
+  private final String firstName;
     private final String lastName;
     private final int age;
 
