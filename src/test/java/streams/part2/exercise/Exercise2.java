@@ -183,7 +183,7 @@ class Exercise2 {
                         Arrays.asList(
                                 new JobHistoryEntry(1, "tester", "EPAM"),
                                 new JobHistoryEntry(2, "dev", "EPAM"),
-                                new JobHistoryEntry(1, "dev", "google")
+                                new JobHistoryEntry(2, "dev", "google")
                         )),
                 new Employee(
                         new Person("Дмитрий", "Осинов", 40),
