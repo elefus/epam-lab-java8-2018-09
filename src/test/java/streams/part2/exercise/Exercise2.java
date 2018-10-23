@@ -1,21 +1,13 @@
 package streams.part2.exercise;
 
-import lambda.data.Employee;
-import lambda.data.JobHistoryEntry;
-import lambda.data.Person;
+import lambda.data.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings("ConstantConditions")
 class Exercise2 {
@@ -76,7 +68,12 @@ class Exercise2 {
     void employersStuffList() {
         List<Employee> employees = getEmployees();
 
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees.stream().flatMap(employee -> employee.getJobHistory().stream()
+                                                                                         .map(entry -> new PersonEmployer(
+                                                                                                 employee.getPerson(),
+                                                                                                 entry.getEmployer())))
+                                                   .collect(groupingBy((PersonEmployer::getEmployer),
+                                                           mapping(PersonEmployer::getPerson, toSet())));
 
         assertThat(result, hasEntry((is("yandex")), contains(employees.get(2).getPerson())));
         assertThat(result, hasEntry((is("mail.ru")), contains(employees.get(2).getPerson())));
@@ -142,7 +139,9 @@ class Exercise2 {
     void indexByFirstEmployer() {
         List<Employee> employees = getEmployees();
 
-        Map<String, Set<Person>> result = null;
+        Map<String, Set<Person>> result = employees.stream()
+                                                   .collect(groupingBy((employee -> employee.getJobHistory().get(0).getEmployer()),
+                                                           mapping(Employee::getPerson, toSet())));
 
         assertThat(result, hasEntry(is("yandex"), contains(employees.get(2).getPerson())));
         assertThat(result, hasEntry(is("T-Systems"), containsInAnyOrder(employees.get(3).getPerson(), employees.get(5).getPerson())));
@@ -161,7 +160,20 @@ class Exercise2 {
     void greatestExperiencePerEmployer() {
         List<Employee> employees = getEmployees();
 
-        Map<String, Person> collect = null;
+        Map<String, Person> collect = employees.stream()
+                                               .flatMap(employee -> employee.getJobHistory()
+                                                                            .stream()
+                                                                            .collect(groupingBy(JobHistoryEntry::getEmployer, summingInt(JobHistoryEntry::getDuration)))
+                                                                            .entrySet()
+                                                                            .stream()
+                                                                            .map(entry -> new PersonEmployerTotalDuration(employee.getPerson(), entry.getKey(), entry.getValue())))
+                                               .collect(collectingAndThen(groupingBy(PersonEmployerTotalDuration::getEmployer,
+                                                       maxBy(Comparator.comparingInt(PersonEmployerTotalDuration::getTotalDuration))),
+                                                       resultMap -> resultMap.entrySet()
+                                                                             .stream()
+                                                                             .collect(toMap(Map.Entry::getKey, entry -> entry.getValue()
+                                                                                                                             .map(PersonEmployerTotalDuration::getPerson)
+                                                                                                                             .orElseThrow(RuntimeException::new)))));
 
         assertThat(collect, hasEntry("EPAM", employees.get(4).getPerson()));
         assertThat(collect, hasEntry("google", employees.get(1).getPerson()));
@@ -175,7 +187,7 @@ class Exercise2 {
                 new Employee(
                         new Person("Иван", "Мельников", 30),
                         Arrays.asList(
-                                new JobHistoryEntry(2, "dev", "EPAM"),
+                                new JobHistoryEntry(7, "dev", "EPAM"),
                                 new JobHistoryEntry(1, "dev", "google")
                         )),
                 new Employee(
