@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -68,10 +69,12 @@ class Exercise2 {
     void employersStuffList() {
         List<Employee> employees = getEmployees();
 
-        Map<String, Set<Person>> result = employees.stream().flatMap(employee -> employee.getJobHistory().stream()
-                                                                                         .map(entry -> new PersonEmployer(
-                                                                                                 employee.getPerson(),
-                                                                                                 entry.getEmployer())))
+        Map<String, Set<Person>> result = employees.stream()
+                                                   .flatMap(employee -> employee.getJobHistory()
+                                                                                .stream()
+                                                                                .map(entry -> new PersonEmployer(
+                                                                                        employee.getPerson(),
+                                                                                        entry.getEmployer())))
                                                    .collect(groupingBy((PersonEmployer::getEmployer),
                                                            mapping(PersonEmployer::getPerson, toSet())));
 
@@ -167,13 +170,10 @@ class Exercise2 {
                                                                             .entrySet()
                                                                             .stream()
                                                                             .map(entry -> new PersonEmployerTotalDuration(employee.getPerson(), entry.getKey(), entry.getValue())))
-                                               .collect(collectingAndThen(groupingBy(PersonEmployerTotalDuration::getEmployer,
-                                                       maxBy(Comparator.comparingInt(PersonEmployerTotalDuration::getTotalDuration))),
-                                                       resultMap -> resultMap.entrySet()
-                                                                             .stream()
-                                                                             .collect(toMap(Map.Entry::getKey, entry -> entry.getValue()
-                                                                                                                             .map(PersonEmployerTotalDuration::getPerson)
-                                                                                                                             .orElseThrow(RuntimeException::new)))));
+                                               .collect(groupingBy(PersonEmployerTotalDuration::getEmployer,
+                                                       collectingAndThen(maxBy(comparingInt(PersonEmployerTotalDuration::getTotalDuration)),
+                                                               tuple -> tuple.map(PersonEmployerTotalDuration::getPerson)
+                                                                         .orElseThrow(RuntimeException::new))));
 
         assertThat(collect, hasEntry("EPAM", employees.get(4).getPerson()));
         assertThat(collect, hasEntry("google", employees.get(1).getPerson()));
