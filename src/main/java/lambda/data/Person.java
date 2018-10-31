@@ -22,7 +22,7 @@ public class Person implements Serializable {
         lastName = "default";
         age = -1;
     }
- 
+
     public String getFirstName(Person this) {
         return firstName;
     }
