@@ -32,6 +32,7 @@ public class Person {
 
     public String getLastName(Person this) {
         return this.lastName;
+
     public String getLastName() {
         return lastName;
     }
