@@ -17,7 +17,6 @@ public class Person implements Serializable {
         this.age = age;
     }
 
-
     public Person() {
         firstName = "default";
         lastName = "default";
@@ -30,7 +29,6 @@ public class Person implements Serializable {
 
     public String getLastName(Person this) {
         return this.lastName;
-
     }
 
     public int getAge() {
